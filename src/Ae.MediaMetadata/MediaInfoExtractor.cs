@@ -38,7 +38,11 @@ namespace Ae.Galeriya.Core
                 {
                     foreach (var item in packetTagsElement.EnumerateObject())
                     {
-                        tags.Add(KeyValuePair.Create(item.Name, item.Value.GetString().Trim()));
+                        var valueString = item.Value.GetString();
+                        if (valueString != null)
+                        {
+                            tags.Add(KeyValuePair.Create(item.Name, valueString.Trim()));
+                        }
                     }
                 }
             }
@@ -61,7 +65,11 @@ namespace Ae.Galeriya.Core
 
                     if (stream.TryGetProperty("duration", out var durationElement))
                     {
-                        duration = float.Parse(durationElement.GetString());
+                        var valueString = durationElement.GetString();
+                        if (valueString != null && float.TryParse(valueString, out float result))
+                        {
+                            duration = result;
+                        }
                     }
                 }
             }
@@ -84,14 +92,18 @@ namespace Ae.Galeriya.Core
             {
                 foreach (var item in tagsElement.EnumerateObject())
                 {
-                    tags.Add(KeyValuePair.Create(item.Name, item.Value.GetString().Trim()));
+                    var valueString = item.Value.GetString();
+                    if (valueString != null)
+                    {
+                        tags.Add(KeyValuePair.Create(item.Name, valueString.Trim()));
+                    }
                 }
             }
 
             return tags;
         }
 
-        private (string Make, string Model, string Software) GetCamera(IEnumerable<KeyValuePair<string, string>> tags)
+        private (string? Make, string? Model, string? Software) GetCamera(IEnumerable<KeyValuePair<string, string>> tags)
         {
             var make = tags.Where(x => x.Key == "Make" || x.Value == "com.apple.quicktime.make").Select(x => x.Value).FirstOrDefault();
             var model = tags.Where(x => x.Key == "Model" || x.Value == "com.apple.quicktime.model").Select(x => x.Value).FirstOrDefault();
