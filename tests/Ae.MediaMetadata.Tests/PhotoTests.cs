@@ -169,5 +169,22 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(-70.63416290283203, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2016-03-19T17:18:23.0000000+00:00"), mediaInfo.CreationTime);
         }
+
+        [Fact]
+        public async Task TestPhoto10()
+        {
+            var file = new FileInfo("Files/100_0657.JPG");
+
+            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+
+            Assert.Equal("EASTMAN KODAK COMPANY", mediaInfo.Camera.Make);
+            Assert.Equal("KODAK C330 ZOOM DIGITAL CAMERA", mediaInfo.Camera.Model);
+            Assert.Equal("Version 1.0700", mediaInfo.Camera.Software);
+            Assert.Equal(2304, mediaInfo.Size.Width);
+            Assert.Equal(1728, mediaInfo.Size.Height);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Location);
+            Assert.Equal(DateTimeOffset.Parse("2005-03-26T23:00:19.0000000+00:00"), mediaInfo.CreationTime);
+        }
     }
 }

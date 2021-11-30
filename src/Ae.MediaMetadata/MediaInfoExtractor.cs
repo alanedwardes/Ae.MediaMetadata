@@ -146,7 +146,7 @@ namespace Ae.Galeriya.Core
 
         private static DateTimeOffset? GetCreationTime(IEnumerable<(string, string)> tags)
         {
-            var creationTime = GetBestTagValue(tags, "creation_time", "DateTime");
+            var creationTime = GetBestTagValue(tags, "creation_time", "DateTime", "DateTimeOriginal", "DateTimeDigitized");
             if (creationTime != null)
             {
                 if (DateTimeOffset.TryParse(creationTime, null, DateTimeStyles.RoundtripKind, out var result))
