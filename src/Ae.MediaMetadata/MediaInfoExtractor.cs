@@ -27,9 +27,9 @@ namespace Ae.Galeriya.Core
         {
         }
 
-        private IReadOnlyList<(string, string)> GetTags(JsonDocument probeResultDocument, string element)
+        private IReadOnlyList<KeyValuePair<string, string>> GetTags(JsonDocument probeResultDocument, string element)
         {
-            var tags = new List<(string, string)>();
+            var tags = new List<KeyValuePair<string, string>>();
 
             var packetsElement = probeResultDocument.RootElement.GetProperty(element);
             foreach (var packet in packetsElement.EnumerateArray())
@@ -38,7 +38,7 @@ namespace Ae.Galeriya.Core
                 {
                     foreach (var item in packetTagsElement.EnumerateObject())
                     {
-                        tags.Add((item.Name, item.Value.GetString().Trim()));
+                        tags.Add(KeyValuePair.Create(item.Name, item.Value.GetString().Trim()));
                     }
                 }
             }
@@ -74,28 +74,28 @@ namespace Ae.Galeriya.Core
             return (size.Value, duration);
         }
 
-        private IReadOnlyList<(string, string)> GetFormatTags(JsonDocument probeResultDocument)
+        private IReadOnlyList<KeyValuePair<string, string>> GetFormatTags(JsonDocument probeResultDocument)
         {
             var format = probeResultDocument.RootElement.GetProperty("format");
 
-            var tags = new List<(string, string)>();
+            var tags = new List<KeyValuePair<string, string>>();
 
             if (format.TryGetProperty("tags", out var tagsElement))
             {
                 foreach (var item in tagsElement.EnumerateObject())
                 {
-                    tags.Add((item.Name, item.Value.GetString().Trim()));
+                    tags.Add(KeyValuePair.Create(item.Name, item.Value.GetString().Trim()));
                 }
             }
 
             return tags;
         }
 
-        private (string Make, string Model, string Software) GetCamera(IEnumerable<(string, string)> tags)
+        private (string Make, string Model, string Software) GetCamera(IEnumerable<KeyValuePair<string, string>> tags)
         {
-            var make = tags.Where(x => x.Item1 == "Make" || x.Item1 == "com.apple.quicktime.make").Select(x => x.Item2).FirstOrDefault();
-            var model = tags.Where(x => x.Item1 == "Model" || x.Item1 == "com.apple.quicktime.model").Select(x => x.Item2).FirstOrDefault();
-            var software = tags.Where(x => x.Item1 == "Software" || x.Item1 == "com.apple.quicktime.software").Select(x => x.Item2).FirstOrDefault();
+            var make = tags.Where(x => x.Key == "Make" || x.Value == "com.apple.quicktime.make").Select(x => x.Value).FirstOrDefault();
+            var model = tags.Where(x => x.Key == "Model" || x.Value == "com.apple.quicktime.model").Select(x => x.Value).FirstOrDefault();
+            var software = tags.Where(x => x.Key == "Software" || x.Value == "com.apple.quicktime.software").Select(x => x.Value).FirstOrDefault();
             return (make, model, software);
         }
 
@@ -108,14 +108,14 @@ namespace Ae.Galeriya.Core
             }).ToArray();
         }
 
-        private (float Latitude, float Longitude)? GetLocation(IEnumerable<(string, string)> tags)
+        private (float Latitude, float Longitude)? GetLocation(IEnumerable<KeyValuePair<string, string>> tags)
         {
-            var latitude = tags.Where(x => x.Item1 == "GPSLatitude").Select(x => x.Item2).FirstOrDefault();
-            var latitudeRef = tags.Where(x => x.Item1 == "GPSLatitudeRef").Select(x => x.Item2).FirstOrDefault();
-            var longitude = tags.Where(x => x.Item1 == "GPSLongitude").Select(x => x.Item2).FirstOrDefault();
-            var longitudeRef = tags.Where(x => x.Item1 == "GPSLongitudeRef").Select(x => x.Item2).FirstOrDefault();
-            var iso6709 = tags.Where(x => x.Item1 == "com.apple.quicktime.location.ISO6709").Select(x => x.Item2).FirstOrDefault();
-            var location = tags.Where(x => x.Item1 == "location").Select(x => x.Item2).FirstOrDefault();
+            var latitude = tags.Where(x => x.Key == "GPSLatitude").Select(x => x.Value).FirstOrDefault();
+            var latitudeRef = tags.Where(x => x.Key == "GPSLatitudeRef").Select(x => x.Value).FirstOrDefault();
+            var longitude = tags.Where(x => x.Key == "GPSLongitude").Select(x => x.Value).FirstOrDefault();
+            var longitudeRef = tags.Where(x => x.Key == "GPSLongitudeRef").Select(x => x.Value).FirstOrDefault();
+            var iso6709 = tags.Where(x => x.Key == "com.apple.quicktime.location.ISO6709").Select(x => x.Value).FirstOrDefault();
+            var location = tags.Where(x => x.Key == "location").Select(x => x.Value).FirstOrDefault();
 
             var coordinate = new Coordinate();
 
@@ -144,7 +144,7 @@ namespace Ae.Galeriya.Core
             return (coordinate.Latitude, coordinate.Longitude);
         }
 
-        private static DateTimeOffset? GetCreationTime(IEnumerable<(string, string)> tags)
+        private static DateTimeOffset? GetCreationTime(IEnumerable<KeyValuePair<string, string>> tags)
         {
             var creationTime = GetBestTagValue(tags, "creation_time", "DateTime", "DateTimeOriginal", "DateTimeDigitized");
             if (creationTime != null)
@@ -174,11 +174,11 @@ namespace Ae.Galeriya.Core
             return null;
         }
 
-        private static string? GetBestTagValue(IEnumerable<(string, string)> tags, params string[] names)
+        private static string? GetBestTagValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
         {
-            var allMatchingTags = tags.Where(x => names.Contains(x.Item1));
+            var allMatchingTags = tags.Where(x => names.Contains(x.Key));
 
-            var commonmatchingTags = allMatchingTags.GroupBy(x => x.Item2).OrderByDescending(x => x.Count());
+            var commonmatchingTags = allMatchingTags.GroupBy(x => x.Value).OrderByDescending(x => x.Count());
 
             return commonmatchingTags.Select(x => x.Key).FirstOrDefault();
         }
@@ -200,7 +200,7 @@ namespace Ae.Galeriya.Core
             var tags = packetTags.Concat(formatTags.Concat(streamTags)).ToArray();
 
             var orientation = MediaOrientation.Unknown;
-            if (int.TryParse(tags.Where(x => x.Item1 == "Orientation").Select(x => x.Item2).FirstOrDefault() ?? "0", out int orientationNumber))
+            if (int.TryParse(tags.Where(x => x.Key == "Orientation").Select(x => x.Value).FirstOrDefault() ?? "0", out int orientationNumber))
             {
                 orientation = (MediaOrientation)orientationNumber;
             }
