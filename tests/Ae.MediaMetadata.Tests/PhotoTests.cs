@@ -186,5 +186,57 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("2005-03-26T23:00:19.0000000+00:00"), mediaInfo.CreationTime);
         }
+
+        [Fact]
+        public async Task TestPhoto11()
+        {
+            var file = new FileInfo("Files/06-08-06_1242.jpg");
+
+            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+
+            Assert.Null(mediaInfo.Camera.Make);
+            Assert.Null(mediaInfo.Camera.Model);
+            Assert.Null(mediaInfo.Camera.Software);
+            Assert.Equal(640, mediaInfo.Size.Width);
+            Assert.Equal(480, mediaInfo.Size.Height);
+            Assert.Equal(MediaOrientation.Unknown, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Location);
+            Assert.Null(mediaInfo.CreationTime);
+        }
+
+        [Fact]
+        public async Task TestPhoto12()
+        {
+            var file = new FileInfo("Files/IMG_5197.JPG");
+
+            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+
+            Assert.Equal("Apple", mediaInfo.Camera.Make);
+            Assert.Equal("iPhone XR", mediaInfo.Camera.Model);
+            Assert.Equal("15.0.2", mediaInfo.Camera.Software);
+            Assert.Equal(4032, mediaInfo.Size.Width);
+            Assert.Equal(3024, mediaInfo.Size.Height);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Equal(53.30091857910156, mediaInfo.Location.Value.Latitude);
+            Assert.Equal(0.15401943027973175, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(DateTimeOffset.Parse("2021-10-23T10:29:39.0000000+01:00"), mediaInfo.CreationTime);
+        }
+
+        [Fact]
+        public async Task TestPhoto13()
+        {
+            var file = new FileInfo("Files/DSC02135.JPG");
+
+            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+
+            Assert.Equal("SONY", mediaInfo.Camera.Make);
+            Assert.Equal("DSC-W300", mediaInfo.Camera.Model);
+            Assert.Null(mediaInfo.Camera.Software);
+            Assert.Equal(2048, mediaInfo.Size.Width);
+            Assert.Equal(1536, mediaInfo.Size.Height);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Location);
+            Assert.Equal(DateTimeOffset.Parse("2021-11-29T17:14:01.0000000+00:00"), mediaInfo.CreationTime);
+        }
     }
 }
