@@ -105,9 +105,9 @@ namespace Ae.Galeriya.Core
 
         private (string? Make, string? Model, string? Software) GetCamera(IEnumerable<KeyValuePair<string, string>> tags)
         {
-            var make = tags.Where(x => x.Key == "Make" || x.Value == "com.apple.quicktime.make").Select(x => x.Value).FirstOrDefault();
-            var model = tags.Where(x => x.Key == "Model" || x.Value == "com.apple.quicktime.model").Select(x => x.Value).FirstOrDefault();
-            var software = tags.Where(x => x.Key == "Software" || x.Value == "com.apple.quicktime.software").Select(x => x.Value).FirstOrDefault();
+            var make = tags.Where(x => x.Key == "Make" || x.Key == "com.apple.quicktime.make").Select(x => x.Value).FirstOrDefault();
+            var model = tags.Where(x => x.Key == "Model" || x.Key == "com.apple.quicktime.model").Select(x => x.Value).FirstOrDefault();
+            var software = tags.Where(x => x.Key == "Software" || x.Key == "com.apple.quicktime.software").Select(x => x.Value).FirstOrDefault();
             return (make, model, software);
         }
 
