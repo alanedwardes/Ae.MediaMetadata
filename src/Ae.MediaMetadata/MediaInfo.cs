@@ -8,7 +8,7 @@ namespace Ae.Galeriya.Core.Entities
         public float? Duration { get; set; }
         public MediaOrientation Orientation { get; set; }
         public DateTimeOffset? CreationTime { get; set; }
-        public (string Make, string Model, string Software) Camera { get; set; }
+        public (string? Make, string? Model, string? Software) Camera { get; set; }
         public (float Latitude, float Longitude)? Location { get; set; }
     }
 }
