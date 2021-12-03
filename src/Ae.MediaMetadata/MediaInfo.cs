@@ -11,24 +11,24 @@ namespace Ae.Galeriya.Core.Entities
         public string? CameraModel { get; set; }
         public string? CameraSoftware { get; set; }
         public (float Latitude, float Longitude)? Location { get; set; }
-        public float? LocationAltitude { get; set; }
-        public float? DigitalZoomRatio { get; set; }
-        public float? ExposureIndex { get; set; }
+        public double? LocationAltitude { get; set; }
+        public double? DigitalZoomRatio { get; set; }
+        public double? ExposureIndex { get; set; }
         public TimeSpan? ShutterSpeedValue { get; set; }
-        public float? BrightnessValue { get; set; }
-        public float? ApertureValue { get; set; }
+        public double? BrightnessValue { get; set; }
+        public double? ApertureValue { get; set; }
         public int? FocalLengthIn35mmFilm { get; set; }
-        public float? FocalLength { get; set; }
-        public float? ExposureBias { get; set; }
+        public double? FocalLength { get; set; }
+        public double? ExposureBias { get; set; }
         public int? IsoSpeed { get; internal set; }
         public TimeSpan? ExposureTime { get; internal set; }
-        public float? FStop { get; internal set; }
+        public double? FStop { get; internal set; }
         public MediaOrientation? Orientation { get; set; }
         public MediaFlash? Flash { get; set; }
         public MediaSaturation? Saturation { get; internal set; }
         public MediaExposureProgram? ExposureProgram { get; set; }
-        public MediaExposureProgram? WhiteBalance { get; set; }
-        public MediaExposureProgram? MeteringMode { get; set; }
-        public MediaExposureProgram? Contrast { get; set; }
+        public MediaWhiteBalance? WhiteBalance { get; set; }
+        public MediaMeteringMode? MeteringMode { get; set; }
+        public MediaContrast? Contrast { get; set; }
     }
 }

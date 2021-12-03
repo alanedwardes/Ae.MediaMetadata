@@ -187,7 +187,7 @@ namespace Ae.Galeriya.Core
             return commonmatchingTags.Select(x => x.Key).FirstOrDefault();
         }
 
-        private static float? GetFloatValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
+        private static double? GetFloatValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
         {
             var bestValue = GetBestStringValue(tags, names);
             if (bestValue == null)
@@ -195,7 +195,12 @@ namespace Ae.Galeriya.Core
                 return null;
             }
 
-            var parts = bestValue.Split(':').Select(float.Parse).ToArray();
+            var parts = bestValue.Split(':').Select(double.Parse).ToArray();
+            if (parts[0] == 0 || parts[1] == 0)
+            {
+                return 0;
+            }
+
             return parts[0] / parts[1];
         }
 
@@ -258,9 +263,9 @@ namespace Ae.Galeriya.Core
             var flash = GetEnumValue<MediaFlash>(tags, "Flash");
             var saturation = GetEnumValue<MediaSaturation>(tags, "Saturation");
             var exposureProgram = GetEnumValue<MediaExposureProgram>(tags, "ExposureProgram");
-            var whiteBalance = GetEnumValue<MediaExposureProgram>(tags, "WhiteBalance");
-            var meteringMode = GetEnumValue<MediaExposureProgram>(tags, "MeteringMode");
-            var contrast = GetEnumValue<MediaExposureProgram>(tags, "Contrast");
+            var whiteBalance = GetEnumValue<MediaWhiteBalance>(tags, "WhiteBalance");
+            var meteringMode = GetEnumValue<MediaMeteringMode>(tags, "MeteringMode");
+            var contrast = GetEnumValue<MediaContrast>(tags, "Contrast");
 
             var fstop = GetFloatValue(tags, "FNumber");
             var exposureTime = GetTimeSpanValue(tags, "ExposureTime");
