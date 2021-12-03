@@ -31,17 +31,19 @@ namespace Ae.Galeriya.Core
         {
             var tags = new List<KeyValuePair<string, string>>();
 
-            var packetsElement = probeResultDocument.RootElement.GetProperty(element);
-            foreach (var packet in packetsElement.EnumerateArray())
+            if (probeResultDocument.RootElement.TryGetProperty(element, out JsonElement packetsElement))
             {
-                if (packet.TryGetProperty("tags", out JsonElement packetTagsElement))
+                foreach (var packet in packetsElement.EnumerateArray())
                 {
-                    foreach (var item in packetTagsElement.EnumerateObject())
+                    if (packet.TryGetProperty("tags", out JsonElement packetTagsElement))
                     {
-                        var valueString = item.Value.GetString();
-                        if (valueString != null)
+                        foreach (var item in packetTagsElement.EnumerateObject())
                         {
-                            tags.Add(KeyValuePair.Create(item.Name, valueString.Trim()));
+                            var valueString = item.Value.GetString();
+                            if (valueString != null)
+                            {
+                                tags.Add(KeyValuePair.Create(item.Name, valueString.Trim()));
+                            }
                         }
                     }
                 }
@@ -52,7 +54,10 @@ namespace Ae.Galeriya.Core
 
         private ((int Width, int Height) Size, float? Duration) GetVideoStreamInfo(JsonDocument probeResultDocument)
         {
-            var streamsElement = probeResultDocument.RootElement.GetProperty("streams");
+            if (!probeResultDocument.RootElement.TryGetProperty("streams", out JsonElement streamsElement))
+            {
+                return ((0, 0), null);
+            }
 
             (int Width, int Height)? size = null;
             float? duration = null;
@@ -84,31 +89,24 @@ namespace Ae.Galeriya.Core
 
         private IReadOnlyList<KeyValuePair<string, string>> GetFormatTags(JsonDocument probeResultDocument)
         {
-            var format = probeResultDocument.RootElement.GetProperty("format");
-
             var tags = new List<KeyValuePair<string, string>>();
 
-            if (format.TryGetProperty("tags", out var tagsElement))
+            if (probeResultDocument.RootElement.TryGetProperty("format", out JsonElement format))
             {
-                foreach (var item in tagsElement.EnumerateObject())
+                if (format.TryGetProperty("tags", out var tagsElement))
                 {
-                    var valueString = item.Value.GetString();
-                    if (valueString != null)
+                    foreach (var item in tagsElement.EnumerateObject())
                     {
-                        tags.Add(KeyValuePair.Create(item.Name, valueString.Trim()));
+                        var valueString = item.Value.GetString();
+                        if (valueString != null)
+                        {
+                            tags.Add(KeyValuePair.Create(item.Name, valueString.Trim()));
+                        }
                     }
                 }
             }
 
             return tags;
-        }
-
-        private (string? Make, string? Model, string? Software) GetCamera(IEnumerable<KeyValuePair<string, string>> tags)
-        {
-            var make = tags.Where(x => x.Key == "Make" || x.Key == "com.apple.quicktime.make").Select(x => x.Value).FirstOrDefault();
-            var model = tags.Where(x => x.Key == "Model" || x.Key == "com.apple.quicktime.model").Select(x => x.Value).FirstOrDefault();
-            var software = tags.Where(x => x.Key == "Software" || x.Key == "com.apple.quicktime.software").Select(x => x.Value).FirstOrDefault();
-            return (make, model, software);
         }
 
         private static float[] ParseLatLongValue(string value)
@@ -122,27 +120,18 @@ namespace Ae.Galeriya.Core
 
         private (float Latitude, float Longitude)? GetLocation(IEnumerable<KeyValuePair<string, string>> tags)
         {
-            var latitude = tags.Where(x => x.Key == "GPSLatitude").Select(x => x.Value).FirstOrDefault();
-            var latitudeRef = tags.Where(x => x.Key == "GPSLatitudeRef").Select(x => x.Value).FirstOrDefault();
-            var longitude = tags.Where(x => x.Key == "GPSLongitude").Select(x => x.Value).FirstOrDefault();
-            var longitudeRef = tags.Where(x => x.Key == "GPSLongitudeRef").Select(x => x.Value).FirstOrDefault();
-            var iso6709 = tags.Where(x => x.Key == "com.apple.quicktime.location.ISO6709").Select(x => x.Value).FirstOrDefault();
-            var location = tags.Where(x => x.Key == "location").Select(x => x.Value).FirstOrDefault();
-
             var coordinate = new Coordinate();
 
+            var location = GetBestStringValue(tags, "location", "com.apple.quicktime.location.ISO6709");
             if (!string.IsNullOrWhiteSpace(location))
             {
                 coordinate.ParseIsoString(location);
                 return (coordinate.Latitude, coordinate.Longitude);
             }
 
-            if (!string.IsNullOrWhiteSpace(iso6709))
-            {
-                coordinate.ParseIsoString(iso6709);
-                return (coordinate.Latitude, coordinate.Longitude);
-            }
 
+            var latitude = GetBestStringValue(tags, "GPSLatitude");
+            var longitude = GetBestStringValue(tags, "GPSLongitude");
             if (string.IsNullOrWhiteSpace(latitude) || string.IsNullOrWhiteSpace(longitude))
             {
                 return null;
@@ -151,6 +140,9 @@ namespace Ae.Galeriya.Core
             var latitudeValue = ParseLatLongValue(latitude);
             var longitudeValue = ParseLatLongValue(longitude);
 
+            var latitudeRef = GetBestStringValue(tags, "GPSLatitudeRef");
+            var longitudeRef = GetBestStringValue(tags, "GPSLongitudeRef");
+
             coordinate.SetDMS(latitudeValue[0], latitudeValue[1], latitudeValue[2], latitudeRef == "N", longitudeValue[0], longitudeValue[1], longitudeValue[2], !(longitudeRef == "W"));
 
             return (coordinate.Latitude, coordinate.Longitude);
@@ -158,7 +150,7 @@ namespace Ae.Galeriya.Core
 
         private static DateTimeOffset? GetCreationTime(IEnumerable<KeyValuePair<string, string>> tags)
         {
-            var creationTime = GetBestTagValue(tags, "creation_time", "DateTime", "DateTimeOriginal", "DateTimeDigitized");
+            var creationTime = GetBestStringValue(tags, "creation_time", "DateTime", "DateTimeOriginal", "DateTimeDigitized");
             if (creationTime != null)
             {
                 if (DateTimeOffset.TryParse(creationTime, null, DateTimeStyles.RoundtripKind, out var result))
@@ -172,8 +164,8 @@ namespace Ae.Galeriya.Core
                 }
             }
 
-            var gpsTimestamp = GetBestTagValue(tags, "GPSTimeStamp");
-            var gpsDatestamp = GetBestTagValue(tags, "GPSDateStamp");
+            var gpsTimestamp = GetBestStringValue(tags, "GPSTimeStamp");
+            var gpsDatestamp = GetBestStringValue(tags, "GPSDateStamp");
             if (gpsTimestamp != null && gpsDatestamp != null)
             {
                 var timestampParts = gpsDatestamp + ' ' + string.Join(":", ParseLatLongValue(gpsTimestamp));
@@ -186,13 +178,64 @@ namespace Ae.Galeriya.Core
             return null;
         }
 
-        private static string? GetBestTagValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
+        private static string? GetBestStringValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
         {
             var allMatchingTags = tags.Where(x => names.Contains(x.Key));
 
             var commonmatchingTags = allMatchingTags.GroupBy(x => x.Value).OrderByDescending(x => x.Count());
 
             return commonmatchingTags.Select(x => x.Key).FirstOrDefault();
+        }
+
+        private static float? GetFloatValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
+        {
+            var bestValue = GetBestStringValue(tags, names);
+            if (bestValue == null)
+            {
+                return null;
+            }
+
+            var parts = bestValue.Split(':').Select(float.Parse).ToArray();
+            return parts[0] / parts[1];
+        }
+
+        private static int? GetIntegerValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
+        {
+            var bestValue = GetBestStringValue(tags, names);
+            if (bestValue == null)
+            {
+                return null;
+            }
+
+            if (!int.TryParse(bestValue, out var result))
+            {
+                return null;
+            }
+
+            return result;
+        }
+
+        private static TEnum? GetEnumValue<TEnum>(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
+            where TEnum : struct
+        {
+            var integerValue = GetIntegerValue(tags, names);
+            if (integerValue == null)
+            {
+                return null;
+            }
+
+            return (TEnum)Enum.ToObject(typeof(TEnum), integerValue);
+        }
+
+        private static TimeSpan? GetTimeSpanValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
+        {
+            var floatValue = GetFloatValue(tags, names);
+            if (floatValue == null)
+            {
+                return null;
+            }
+
+            return TimeSpan.FromSeconds(floatValue.Value);
         }
 
         public async Task<Entities.MediaInfo> ExtractInformation(FileInfo fileInfo, CancellationToken token)
@@ -211,14 +254,32 @@ namespace Ae.Galeriya.Core
 
             var tags = packetTags.Concat(formatTags.Concat(streamTags)).ToArray();
 
-            var orientation = MediaOrientation.Unknown;
-            if (int.TryParse(tags.Where(x => x.Key == "Orientation").Select(x => x.Value).FirstOrDefault() ?? "0", out int orientationNumber))
-            {
-                orientation = (MediaOrientation)orientationNumber;
-            }
+            var orientation = GetEnumValue<MediaOrientation>(tags, "Orientation");
+            var flash = GetEnumValue<MediaFlash>(tags, "Flash");
+            var saturation = GetEnumValue<MediaSaturation>(tags, "Saturation");
+            var exposureProgram = GetEnumValue<MediaExposureProgram>(tags, "ExposureProgram");
+            var whiteBalance = GetEnumValue<MediaExposureProgram>(tags, "WhiteBalance");
+            var meteringMode = GetEnumValue<MediaExposureProgram>(tags, "MeteringMode");
+            var contrast = GetEnumValue<MediaExposureProgram>(tags, "Contrast");
+
+            var fstop = GetFloatValue(tags, "FNumber");
+            var exposureTime = GetTimeSpanValue(tags, "ExposureTime");
+            var isoSpeed = GetIntegerValue(tags, "ISOSpeedRatings");
+            var exposureBias = GetFloatValue(tags, "ExposureBiasValue");
+            var focalLength = GetFloatValue(tags, "FocalLength");
+            var focalLengthIn35mmFilm = GetIntegerValue(tags, "FocalLengthIn35mmFilm");
+            var apertureValue = GetFloatValue(tags, "ApertureValue");
+            var brightnessValue = GetFloatValue(tags, "BrightnessValue");
+            var shutterSpeedValue = GetTimeSpanValue(tags, "ShutterSpeedValue");
+            var exposureIndex = GetFloatValue(tags, "ExposureIndex");
+            var digitalZoomRatio = GetFloatValue(tags, "DigitalZoomRatio");
+            var gpsAltitude = GetFloatValue(tags, "GPSAltitude");
+
+            var make = GetBestStringValue(tags, "Make", "com.apple.quicktime.make");
+            var model = GetBestStringValue(tags, "Model", "com.apple.quicktime.model");
+            var software = GetBestStringValue(tags, "Software", "com.apple.quicktime.software");
 
             var creationTime = GetCreationTime(tags);
-            var make = GetCamera(tags);
             var location = GetLocation(tags);
 
             return new Entities.MediaInfo
@@ -227,8 +288,28 @@ namespace Ae.Galeriya.Core
                 CreationTime = creationTime,
                 Size = videoStreamInfo.Size,
                 Orientation = orientation,
-                Camera = make,
-                Location = location
+                Flash = flash,
+                Saturation = saturation,
+                ExposureProgram = exposureProgram,
+                WhiteBalance = whiteBalance,
+                MeteringMode = meteringMode,
+                Contrast = contrast,
+                CameraMake = make,
+                CameraModel = model,
+                CameraSoftware = software,
+                Location = location,
+                LocationAltitude = gpsAltitude,
+                DigitalZoomRatio = digitalZoomRatio,
+                ExposureIndex = exposureIndex,
+                ShutterSpeedValue = shutterSpeedValue,
+                BrightnessValue = brightnessValue,
+                ApertureValue = apertureValue,
+                FocalLength = focalLength,
+                FocalLengthIn35mmFilm = focalLengthIn35mmFilm,
+                ExposureBias = exposureBias,
+                IsoSpeed = isoSpeed,
+                ExposureTime = exposureTime,
+                FStop = fstop
             };
         }
 

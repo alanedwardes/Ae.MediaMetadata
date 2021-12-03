@@ -67,19 +67,19 @@ namespace Ae.Galeriya.Core.Entities
 
         public void GetD(out float latDeg, out float lonDeg)
         {
-            latDeg = this.latitude / 3600.0f;
-            lonDeg = this.longitude / 3600.0f;
+            latDeg = latitude / 3600.0f;
+            lonDeg = longitude / 3600.0f;
         }
 
         public void GetDM(out float latDeg, out float latMin, out bool north, out float lonDeg, out float lonMin, out bool east)
         {
-            north = this.latitude >= 0;
-            double a = Math.Abs(this.latitude);
+            north = latitude >= 0;
+            double a = Math.Abs(latitude);
             latDeg = (float)Math.Truncate(a / 3600.0);
             latMin = (float)(a - latDeg * 3600.0) / 60.0f;
 
-            east = this.longitude >= 0;
-            double b = Math.Abs(this.longitude);
+            east = longitude >= 0;
+            double b = Math.Abs(longitude);
             lonDeg = (float)Math.Truncate(b / 3600.0);
             lonMin = (float)(b - lonDeg * 3600.0) / 60.0f;
         }
