@@ -1,4 +1,4 @@
-﻿using Ae.Galeriya.Core;
+﻿using Ae.MediaMetadata;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;

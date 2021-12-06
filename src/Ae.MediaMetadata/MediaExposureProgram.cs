@@ -1,4 +1,4 @@
-﻿namespace Ae.Galeriya.Core.Entities
+﻿namespace Ae.MediaMetadata.Entities
 {
     /// <summary>
     /// The class of the program used by the camera to set exposure when the picture is taken.

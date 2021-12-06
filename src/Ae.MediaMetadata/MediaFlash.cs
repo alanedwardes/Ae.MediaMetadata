@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ae.Galeriya.Core.Entities
+namespace Ae.MediaMetadata.Entities
 {
     /// <summary>
     /// Indicates the status of flash when the image was shot.

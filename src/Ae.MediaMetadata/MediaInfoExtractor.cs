@@ -1,4 +1,4 @@
-﻿using Ae.Galeriya.Core.Entities;
+﻿using Ae.MediaMetadata.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 
-namespace Ae.Galeriya.Core
+namespace Ae.MediaMetadata
 {
     public sealed class MediaInfoExtractor : IMediaInfoExtractor
     {
@@ -73,6 +73,12 @@ namespace Ae.Galeriya.Core
                         var valueString = durationElement.GetString();
                         if (valueString != null && float.TryParse(valueString, out float result))
                         {
+                            if (stream.TryGetProperty("codec_name", out var codecName) && codecName.GetString() == "mjpeg" && result == 0.04f)
+                            {
+                                // This is a JPEG image
+                                continue;
+                            }
+
                             duration = result;
                         }
                     }

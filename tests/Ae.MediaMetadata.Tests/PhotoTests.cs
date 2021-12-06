@@ -1,5 +1,5 @@
-﻿using Ae.Galeriya.Core;
-using Ae.Galeriya.Core.Entities;
+﻿using Ae.MediaMetadata;
+using Ae.MediaMetadata.Entities;
 using System;
 using System.IO;
 using System.Threading;
@@ -45,6 +45,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaFlash.CompulsoryFlashMode | MediaFlash.AutoMode, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("11/11/2021 18:05:38 +00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -80,6 +81,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaFlash.FlashFired, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("25/03/2021 17:38:08 +00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -115,6 +117,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaFlash.FlashDidNotFire, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("17/03/2018 12:49:35 +00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -151,6 +154,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(53.372928619384766, mediaInfo.Location.Value.Latitude);
             Assert.Equal(-0.9346972107887268, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("10/10/2021 11:26:45 +01:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -187,6 +191,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(53.30084991455078, mediaInfo.Location.Value.Latitude);
             Assert.Equal(0.15413889288902283, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2021-10-23T18:10:50.0000000+01:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -222,6 +227,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("11/11/2021 18:28:49 +00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -258,6 +264,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(42.35649871826172, mediaInfo.Location.Value.Latitude);
             Assert.Equal(23.3837833404541, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2017-08-16T10:10:13.0000000+01:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -294,6 +301,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(42.362518310546875, mediaInfo.Location.Value.Latitude);
             Assert.Equal(-71.05595397949219, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2016-03-17T22:49:10.0000000+00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -330,6 +338,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(42.61323928833008, mediaInfo.Location.Value.Latitude);
             Assert.Equal(-70.63416290283203, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2016-03-19T17:18:23.0000000+00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -365,6 +374,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaFlash.CompulsoryFlashMode | MediaFlash.AutoMode, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("2005-03-26T23:00:19.0000000+00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -400,6 +410,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Null(mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -436,6 +447,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(53.30091857910156, mediaInfo.Location.Value.Latitude);
             Assert.Equal(0.15401943027973175, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2021-10-23T10:29:39.0000000+01:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
 
         [Fact]
@@ -471,6 +483,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaFlash.CompulsoryFlashMode | MediaFlash.AutoMode, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("2021-11-29T17:14:01.0000000+00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
         }
     }
 }

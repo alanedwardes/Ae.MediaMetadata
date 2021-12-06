@@ -1,4 +1,4 @@
-﻿namespace Ae.Galeriya.Core.Entities
+﻿namespace Ae.MediaMetadata.Entities
 {
     /// <summary>
     /// Indicates the direction of contrast processing applied by the camera when the image was shot.

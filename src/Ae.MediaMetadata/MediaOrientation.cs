@@ -1,4 +1,4 @@
-﻿namespace Ae.Galeriya.Core.Entities
+﻿namespace Ae.MediaMetadata.Entities
 {
     /// <summary>
     /// Enumerates the available orientation values supplied by EXIF metadata.

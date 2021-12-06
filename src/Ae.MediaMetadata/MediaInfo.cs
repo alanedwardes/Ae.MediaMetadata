@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ae.Galeriya.Core.Entities
+namespace Ae.MediaMetadata.Entities
 {
     public sealed class MediaInfo
     {

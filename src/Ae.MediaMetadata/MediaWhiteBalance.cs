@@ -1,4 +1,4 @@
-﻿namespace Ae.Galeriya.Core.Entities
+﻿namespace Ae.MediaMetadata.Entities
 {
     /// <summary>
     /// Indicates the white balance mode set when the image was shot.

@@ -1,9 +1,9 @@
-﻿using Ae.Galeriya.Core.Entities;
+﻿using Ae.MediaMetadata.Entities;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ae.Galeriya.Core
+namespace Ae.MediaMetadata
 {
     public interface IMediaInfoExtractor
     {

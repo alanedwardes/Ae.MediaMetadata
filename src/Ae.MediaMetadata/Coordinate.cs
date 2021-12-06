@@ -5,7 +5,7 @@
 using System;
 using System.Globalization;
 
-namespace Ae.Galeriya.Core.Entities
+namespace Ae.MediaMetadata.Entities
 {
     internal sealed class Coordinate
     {
