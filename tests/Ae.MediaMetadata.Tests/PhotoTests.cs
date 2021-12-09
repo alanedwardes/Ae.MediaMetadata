@@ -1,5 +1,4 @@
-﻿using Ae.MediaMetadata;
-using Ae.MediaMetadata.Entities;
+﻿using Ae.MediaMetadata.Entities;
 using System;
 using System.IO;
 using System.Threading;
@@ -10,14 +9,14 @@ namespace Ae.MediaMetadata.Tests
 {
     public sealed class PhotoTests : IClassFixture<FfmpegFixture>
     {
-        private readonly IMediaInfoExtractor _mediaInfoExtractor = new MediaInfoExtractor();
-
-        [Fact]
-        public async Task TestPhoto1()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto1(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_0293.jpg");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("Apple", mediaInfo.CameraMake);
             Assert.Equal("iPhone 12", mediaInfo.CameraModel);
@@ -33,9 +32,9 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
             Assert.Equal(TimeSpan.FromMilliseconds(20f), mediaInfo.ExposureTime);
             Assert.Equal(4.2d, mediaInfo.FocalLength);
-            Assert.Equal(26, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.6d, mediaInfo.FStop);
-            Assert.Equal(125, mediaInfo.IsoSpeed);
+            Assert.Equal(125u, mediaInfo.IsoSpeed);
             Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -48,12 +47,14 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto2()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto2(Type exifReader)
         {
             var file = new FileInfo("Files/5528.JPEG");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("samsung", mediaInfo.CameraMake);
             Assert.Equal("SM-G960F", mediaInfo.CameraModel);
@@ -63,15 +64,15 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(1.16d, mediaInfo.ApertureValue);
             Assert.Equal(4.66d, mediaInfo.BrightnessValue);
             Assert.Equal(MediaContrast.Normal, mediaInfo.Contrast);
-            Assert.Equal(0f, mediaInfo.DigitalZoomRatio);
+            Assert.Equal(double.NaN, mediaInfo.DigitalZoomRatio);
             Assert.Equal(0f, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
             Assert.Equal(TimeSpan.FromMilliseconds(5.91711d), mediaInfo.ExposureTime);
             Assert.Equal(4.3d, mediaInfo.FocalLength);
-            Assert.Equal(26, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.5d, mediaInfo.FStop);
-            Assert.Equal(50, mediaInfo.IsoSpeed);
+            Assert.Equal(50u, mediaInfo.IsoSpeed);
             Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.CenterWeightedAverage, mediaInfo.MeteringMode);
             Assert.Equal(MediaSaturation.Normal, mediaInfo.Saturation);
@@ -84,12 +85,14 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto3()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto3(Type exifReader)
         {
             var file = new FileInfo("Files/495.JPEG");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("samsung", mediaInfo.CameraMake);
             Assert.Equal("SM-G930F", mediaInfo.CameraModel);
@@ -105,9 +108,9 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
             Assert.Equal(TimeSpan.FromMilliseconds(40d), mediaInfo.ExposureTime);
             Assert.Equal(4.2d, mediaInfo.FocalLength);
-            Assert.Equal(26, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.7d, mediaInfo.FStop);
-            Assert.Equal(250, mediaInfo.IsoSpeed);
+            Assert.Equal(250u, mediaInfo.IsoSpeed);
             Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.CenterWeightedAverage, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -120,12 +123,14 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto4()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto4(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_3228.JPG");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("Apple", mediaInfo.CameraMake);
             Assert.Equal("iPhone 8 Plus", mediaInfo.CameraModel);
@@ -141,9 +146,9 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
             Assert.Equal(TimeSpan.FromMilliseconds(33.333333d), mediaInfo.ExposureTime);
             Assert.Equal(3.99d, mediaInfo.FocalLength);
-            Assert.Equal(28, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)28, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.8d, mediaInfo.FStop);
-            Assert.Equal(20, mediaInfo.IsoSpeed);
+            Assert.Equal(20u, mediaInfo.IsoSpeed);
             Assert.Equal(12.02624703087886, mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -151,18 +156,20 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
-            Assert.Equal(53.372928619384766, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(-0.9346972107887268, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(53.37292777803209, mediaInfo.Location.Value.Latitude);
+            Assert.Equal(-0.9346972221798368, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("10/10/2021 11:26:45 +01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto5()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto5(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_3285.JPG");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("Apple", mediaInfo.CameraMake);
             Assert.Equal("iPhone 8 Plus", mediaInfo.CameraModel);
@@ -178,9 +185,9 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
             Assert.Equal(TimeSpan.FromMilliseconds(10d), mediaInfo.ExposureTime);
             Assert.Equal(6.6d, mediaInfo.FocalLength);
-            Assert.Equal(57, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)57, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2.8d, mediaInfo.FStop);
-            Assert.Equal(80, mediaInfo.IsoSpeed);
+            Assert.Equal(80u, mediaInfo.IsoSpeed);
             Assert.Equal(20.366126205083262d, mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -188,18 +195,20 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.RightTop, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
-            Assert.Equal(53.30084991455078, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(0.15413889288902283, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(53.30085277775923, mediaInfo.Location.Value.Latitude);
+            Assert.Equal(0.1541388887829251, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2021-10-23T18:10:50.0000000+01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto6()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto6(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_20211111_182849_Original.jpeg");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("OnePlus", mediaInfo.CameraMake);
             Assert.Equal("ONEPLUS A5000", mediaInfo.CameraModel);
@@ -215,9 +224,9 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaExposureProgram.NotDefined, mediaInfo.ExposureProgram);
             Assert.Null(mediaInfo.ExposureTime);
             Assert.Equal(4.103d, mediaInfo.FocalLength);
-            Assert.Equal(24, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)24, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.7d, mediaInfo.FStop);
-            Assert.Equal(1000, mediaInfo.IsoSpeed);
+            Assert.Equal(1000u, mediaInfo.IsoSpeed);
             Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Unknown, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -230,12 +239,14 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto7()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto7(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_20170816_131016.jpg");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("motorola", mediaInfo.CameraMake);
             Assert.Equal("Nexus 6", mediaInfo.CameraModel);
@@ -253,7 +264,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(3.82d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2d, mediaInfo.FStop);
-            Assert.Equal(40, mediaInfo.IsoSpeed);
+            Assert.Equal(40u, mediaInfo.IsoSpeed);
             Assert.Equal(1019, mediaInfo.LocationAltitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -261,18 +272,20 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.FlashDidNotFire, mediaInfo.Flash);
-            Assert.Equal(42.35649871826172, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(23.3837833404541, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(42.35649722205268, mediaInfo.Location.Value.Latitude);
+            Assert.Equal(23.38378333333466, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2017-08-16T10:10:13.0000000+01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto8()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto8(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_20160317_184950.jpg");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("motorola", mediaInfo.CameraMake);
             Assert.Equal("Nexus 6", mediaInfo.CameraModel);
@@ -290,7 +303,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(3.82d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2d, mediaInfo.FStop);
-            Assert.Equal(72, mediaInfo.IsoSpeed);
+            Assert.Equal(72u, mediaInfo.IsoSpeed);
             Assert.Equal(17, mediaInfo.LocationAltitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -298,18 +311,20 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Null(mediaInfo.Flash);
-            Assert.Equal(42.362518310546875, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(-71.05595397949219, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(42.36251944435968, mediaInfo.Location.Value.Latitude);
+            Assert.Equal(-71.0559500000212, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2016-03-17T22:49:10.0000000+00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto9()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto9(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_20160319_131826.jpg");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("motorola", mediaInfo.CameraMake);
             Assert.Equal("Nexus 6", mediaInfo.CameraModel);
@@ -327,7 +342,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(3.82d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2d, mediaInfo.FStop);
-            Assert.Equal(40, mediaInfo.IsoSpeed);
+            Assert.Equal(40u, mediaInfo.IsoSpeed);
             Assert.Equal(32, mediaInfo.LocationAltitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -335,18 +350,20 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Null(mediaInfo.Flash);
-            Assert.Equal(42.61323928833008, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(-70.63416290283203, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(42.61323611153497, mediaInfo.Location.Value.Latitude);
+            Assert.Equal(-70.63416388889154, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2016-03-19T17:18:23.0000000+00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto10()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto10(Type exifReader)
         {
             var file = new FileInfo("Files/100_0657.JPG");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("EASTMAN KODAK COMPANY", mediaInfo.CameraMake);
             Assert.Equal("KODAK C330 ZOOM DIGITAL CAMERA", mediaInfo.CameraModel);
@@ -362,9 +379,9 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
             Assert.Equal(TimeSpan.FromMilliseconds(6.077), mediaInfo.ExposureTime);
             Assert.Equal(13.5d, mediaInfo.FocalLength);
-            Assert.Equal(82, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)82, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(4d, mediaInfo.FStop);
-            Assert.Equal(80, mediaInfo.IsoSpeed);
+            Assert.Equal(80u, mediaInfo.IsoSpeed);
             Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.CenterWeightedAverage, mediaInfo.MeteringMode);
             Assert.Equal(MediaSaturation.Normal, mediaInfo.Saturation);
@@ -377,12 +394,14 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto11()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto11(Type exifReader)
         {
             var file = new FileInfo("Files/06-08-06_1242.jpg");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Null(mediaInfo.CameraMake);
             Assert.Null(mediaInfo.CameraModel);
@@ -413,12 +432,14 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto12()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto12(Type exifReader)
         {
             var file = new FileInfo("Files/IMG_5197.JPG");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("Apple", mediaInfo.CameraMake);
             Assert.Equal("iPhone XR", mediaInfo.CameraModel);
@@ -434,9 +455,9 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
             Assert.Equal(TimeSpan.FromMilliseconds(1.0683), mediaInfo.ExposureTime);
             Assert.Equal(4.25d, mediaInfo.FocalLength);
-            Assert.Equal(26, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.8d, mediaInfo.FStop);
-            Assert.Equal(25, mediaInfo.IsoSpeed);
+            Assert.Equal(25u, mediaInfo.IsoSpeed);
             Assert.Equal(20.345983787767132, mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
@@ -444,18 +465,20 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
-            Assert.Equal(53.30091857910156, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(0.15401943027973175, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(53.30091944442855, mediaInfo.Location.Value.Latitude);
+            Assert.Equal(0.15401944451861913, mediaInfo.Location.Value.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2021-10-23T10:29:39.0000000+01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
         }
 
-        [Fact]
-        public async Task TestPhoto13()
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto13(Type exifReader)
         {
             var file = new FileInfo("Files/DSC02135.JPG");
 
-            var mediaInfo = await _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None);
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
 
             Assert.Equal("SONY", mediaInfo.CameraMake);
             Assert.Equal("DSC-W300", mediaInfo.CameraModel);
@@ -473,7 +496,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(7.6d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2.8d, mediaInfo.FStop);
-            Assert.Equal(200, mediaInfo.IsoSpeed);
+            Assert.Equal(200u, mediaInfo.IsoSpeed);
             Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Equal(MediaSaturation.Normal, mediaInfo.Saturation);

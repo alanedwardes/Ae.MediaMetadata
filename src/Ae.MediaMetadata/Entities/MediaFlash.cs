@@ -6,7 +6,7 @@ namespace Ae.MediaMetadata.Entities
     /// Indicates the status of flash when the image was shot.
     /// </summary>
     [Flags]
-    public enum MediaFlash : byte
+    public enum MediaFlash : ushort
     {
         FlashDidNotFire = 0,
         StrobeReturnLightNotDetected = 4,

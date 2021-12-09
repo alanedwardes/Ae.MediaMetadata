@@ -3,7 +3,7 @@
     /// <summary>
     /// The class of the program used by the camera to set exposure when the picture is taken.
     /// </summary>
-    public enum MediaExposureProgram : byte
+    public enum MediaExposureProgram : ushort
     {
         /// <summary>
         /// Not defined

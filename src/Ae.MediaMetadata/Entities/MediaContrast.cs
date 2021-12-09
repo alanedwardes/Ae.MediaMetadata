@@ -1,21 +1,21 @@
 ﻿namespace Ae.MediaMetadata.Entities
 {
     /// <summary>
-    /// Indicates the direction of saturation processing applied by the camera when the image was shot.
+    /// Indicates the direction of contrast processing applied by the camera when the image was shot.
     /// </summary>
-    public enum MediaSaturation : byte
+    public enum MediaContrast : ushort
     {
         /// <summary>
         /// Normal
         /// </summary>
         Normal = 0,
         /// <summary>
-        /// Low saturation
+        /// Soft
         /// </summary>
-        LowSaturation = 1,
+        Soft = 1,
         /// <summary>
-        /// High saturation
+        /// Hard
         /// </summary>
-        HighSaturation = 2
+        Hard = 2
     }
 }

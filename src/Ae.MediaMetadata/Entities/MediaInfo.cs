@@ -10,17 +10,17 @@ namespace Ae.MediaMetadata.Entities
         public string? CameraMake { get; set; }
         public string? CameraModel { get; set; }
         public string? CameraSoftware { get; set; }
-        public (float Latitude, float Longitude)? Location { get; set; }
+        public (double Latitude, double Longitude)? Location { get; set; }
         public double? LocationAltitude { get; set; }
         public double? DigitalZoomRatio { get; set; }
         public double? ExposureIndex { get; set; }
         public TimeSpan? ShutterSpeedValue { get; set; }
         public double? BrightnessValue { get; set; }
         public double? ApertureValue { get; set; }
-        public int? FocalLengthIn35mmFilm { get; set; }
+        public ushort? FocalLengthIn35mmFilm { get; set; }
         public double? FocalLength { get; set; }
         public double? ExposureBias { get; set; }
-        public int? IsoSpeed { get; internal set; }
+        public uint? IsoSpeed { get; internal set; }
         public TimeSpan? ExposureTime { get; internal set; }
         public double? FStop { get; internal set; }
         public MediaOrientation? Orientation { get; set; }

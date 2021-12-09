@@ -3,7 +3,7 @@
     /// <summary>
     /// The metering mode.
     /// </summary>
-    public enum MediaMeteringMode : byte
+    public enum MediaMeteringMode : ushort
     {
         /// <summary>
         /// Unknown

@@ -3,7 +3,7 @@
     /// <summary>
     /// Enumerates the available orientation values supplied by EXIF metadata.
     /// </summary>
-    public enum MediaOrientation : byte
+    public enum MediaOrientation : ushort
     {
         /// <summary>
         /// Unknown rotation.

@@ -3,7 +3,7 @@
     /// <summary>
     /// Indicates the white balance mode set when the image was shot.
     /// </summary>
-    public enum MediaWhiteBalance
+    public enum MediaWhiteBalance : ushort
     {
         /// <summary>
         /// Auto white balance
