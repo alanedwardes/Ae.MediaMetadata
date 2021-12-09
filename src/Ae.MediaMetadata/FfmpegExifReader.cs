@@ -207,11 +207,10 @@ namespace Ae.MediaMetadata
                 return null;
             }
 
-            var parts = bestValue.Split(':').Select(double.Parse).ToArray();
-            if (parts[0] == 0 || parts[1] == 0)
-            {
-                //return 0;
-            }
+            var parts = bestValue
+                .Split(':')
+                .Select(double.Parse)
+                .ToArray();
 
             return parts[0] / parts[1];
         }
