@@ -5,6 +5,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -29,8 +30,12 @@ namespace Ae.MediaMetadata
 
         public async Task<MediaInfo> ReadMediaInfo(FileInfo fileInfo, CancellationToken token)
         {
+            var sw = Stopwatch.StartNew();
+
             using var reader = fileInfo.OpenRead();
             using var image = await Image.LoadAsync(reader);
+
+            _logger.LogInformation("Finished probing information for {File} in {TimeSeconds}s", fileInfo, sw.Elapsed.TotalSeconds);
 
             var exif = image.Metadata.ExifProfile?.Values ?? Array.Empty<IExifValue>();
 
