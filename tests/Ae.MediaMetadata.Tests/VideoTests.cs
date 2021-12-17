@@ -33,7 +33,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Null(mediaInfo.FStop);
             Assert.Null(mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
+            Assert.Null(mediaInfo.Location.Altitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
             Assert.Null(mediaInfo.ShutterSpeedValue);
@@ -42,8 +42,8 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.CameraMake);
             Assert.Null(mediaInfo.CameraModel);
             Assert.Null(mediaInfo.CameraSoftware);
-            Assert.Equal(42.36099999999999, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(-71.0543, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(42.36099999999999, mediaInfo.Location.Latitude);
+            Assert.Equal(-71.0543, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("05/10/2018 22:17:25 +00:00"), mediaInfo.CreationTime);
             Assert.Equal(15.3456106f, mediaInfo.Duration);
         }
@@ -69,7 +69,7 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Null(mediaInfo.FStop);
             Assert.Null(mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
+            Assert.Null(mediaInfo.Location.Altitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
             Assert.Null(mediaInfo.ShutterSpeedValue);
@@ -79,8 +79,8 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal("Apple", mediaInfo.CameraMake);
             Assert.Equal("iPhone 8 Plus", mediaInfo.CameraModel);
             Assert.Equal("15.0.2", mediaInfo.CameraSoftware);
-            Assert.Equal(53.3009, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(0.1541, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(53.3009, mediaInfo.Location.Latitude);
+            Assert.Equal(0.1541, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2021-10-23T17:10:50.0000000+00:00"), mediaInfo.CreationTime);
             Assert.Equal(2.798333f, mediaInfo.Duration);
         }
@@ -107,7 +107,6 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Null(mediaInfo.FStop);
             Assert.Null(mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
             Assert.Null(mediaInfo.ShutterSpeedValue);
@@ -142,7 +141,6 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Null(mediaInfo.FStop);
             Assert.Null(mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
             Assert.Null(mediaInfo.ShutterSpeedValue);

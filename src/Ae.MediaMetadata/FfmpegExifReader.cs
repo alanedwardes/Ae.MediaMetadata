@@ -54,21 +54,21 @@ namespace Ae.MediaMetadata
             return tags;
         }
 
-        private ((int Width, int Height) Size, float? Duration) GetVideoStreamInfo(JsonDocument probeResultDocument)
+        private (MediaSize Size, float? Duration) GetVideoStreamInfo(JsonDocument probeResultDocument)
         {
             if (!probeResultDocument.RootElement.TryGetProperty("streams", out JsonElement streamsElement))
             {
-                return ((0, 0), null);
+                return (new MediaSize(), null);
             }
 
-            (int Width, int Height)? size = null;
+            MediaSize? size = null;
             float? duration = null;
             foreach (var stream in streamsElement.EnumerateArray())
             {
                 var codecType = stream.GetProperty("codec_type").GetString();
                 if (codecType == "video")
                 {
-                    size = (stream.GetProperty("width").GetInt32(), stream.GetProperty("height").GetInt32());
+                    size = new(stream.GetProperty("width").GetInt32(), stream.GetProperty("height").GetInt32());
 
                     if (stream.TryGetProperty("duration", out var durationElement))
                     {
@@ -87,12 +87,12 @@ namespace Ae.MediaMetadata
                 }
             }
 
-            if (!size.HasValue)
+            if (size == null)
             {
                 throw new InvalidOperationException("No media with or height found");
             }
 
-            return (size.Value, duration);
+            return (size, duration);
         }
 
         private IReadOnlyList<KeyValuePair<string, string>> GetFormatTags(JsonDocument probeResultDocument)
@@ -130,15 +130,20 @@ namespace Ae.MediaMetadata
             }).ToArray();
         }
 
-        private (double Latitude, double Longitude)? GetLocation(IEnumerable<KeyValuePair<string, string>> tags)
+        private MediaLocation? GetLocation(IEnumerable<KeyValuePair<string, string>> tags)
         {
+            var altitude = GetFloatValue(tags, "GPSAltitude");
+
             var coordinate = new Coordinate();
 
             var location = GetBestStringValue(tags, "location", "com.apple.quicktime.location.ISO6709");
             if (!string.IsNullOrWhiteSpace(location))
             {
                 coordinate.ParseIsoString(location);
-                return (coordinate.Latitude, coordinate.Longitude);
+                return new(coordinate.Latitude, coordinate.Longitude)
+                {
+                    Altitude = altitude
+                };
             }
 
 
@@ -157,7 +162,10 @@ namespace Ae.MediaMetadata
 
             coordinate.SetDMS(latitudeValue[0], latitudeValue[1], latitudeValue[2], latitudeRef, longitudeValue[0], longitudeValue[1], longitudeValue[2], longitudeRef);
 
-            return (coordinate.Latitude, coordinate.Longitude);
+            return new(coordinate.Latitude, coordinate.Longitude)
+            {
+                Altitude = altitude
+            };
         }
 
         private static DateTimeOffset? GetCreationTime(IEnumerable<KeyValuePair<string, string>> tags)
@@ -243,17 +251,6 @@ namespace Ae.MediaMetadata
             return (TEnum)Enum.ToObject(typeof(TEnum), integerValue);
         }
 
-        private static TimeSpan? GetTimeSpanValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
-        {
-            var floatValue = GetFloatValue(tags, names);
-            if (floatValue == null)
-            {
-                return null;
-            }
-
-            return TimeSpan.FromSeconds(floatValue.Value);
-        }
-
         public async Task<Entities.MediaInfo> ReadMediaInfo(FileInfo fileInfo, CancellationToken token)
         {
             var sw = Stopwatch.StartNew();
@@ -263,69 +260,41 @@ namespace Ae.MediaMetadata
 
             var probeResultDocument = JsonDocument.Parse(probeResult);
 
-            var packetTags = GetTags(probeResultDocument, "packets_and_frames");
-            var streamTags = GetTags(probeResultDocument, "streams");
-            var videoStreamInfo = GetVideoStreamInfo(probeResultDocument);
-            var formatTags = GetFormatTags(probeResultDocument);
+            var (size, duration) = GetVideoStreamInfo(probeResultDocument);
 
-            var tags = packetTags.Concat(formatTags.Concat(streamTags)).ToArray();
-
-            var orientation = GetEnumValue<MediaOrientation>(tags, "Orientation");
-            var flash = GetEnumValue<MediaFlash>(tags, "Flash");
-            var saturation = GetEnumValue<MediaSaturation>(tags, "Saturation");
-            var exposureProgram = GetEnumValue<MediaExposureProgram>(tags, "ExposureProgram");
-            var whiteBalance = GetEnumValue<MediaWhiteBalance>(tags, "WhiteBalance");
-            var meteringMode = GetEnumValue<MediaMeteringMode>(tags, "MeteringMode");
-            var contrast = GetEnumValue<MediaContrast>(tags, "Contrast");
-
-            var fstop = GetFloatValue(tags, "FNumber");
-            var exposureTime = GetTimeSpanValue(tags, "ExposureTime");
-            var isoSpeed = GetIntegerValue(tags, "ISOSpeedRatings");
-            var exposureBias = GetFloatValue(tags, "ExposureBiasValue");
-            var focalLength = GetFloatValue(tags, "FocalLength");
-            var focalLengthIn35mmFilm = (ushort?)GetIntegerValue(tags, "FocalLengthIn35mmFilm");
-            var apertureValue = GetFloatValue(tags, "ApertureValue");
-            var brightnessValue = GetFloatValue(tags, "BrightnessValue");
-            var shutterSpeedValue = GetTimeSpanValue(tags, "ShutterSpeedValue");
-            var exposureIndex = GetFloatValue(tags, "ExposureIndex");
-            var digitalZoomRatio = GetFloatValue(tags, "DigitalZoomRatio");
-            var gpsAltitude = GetFloatValue(tags, "GPSAltitude");
-
-            var make = GetBestStringValue(tags, "Make", "com.apple.quicktime.make");
-            var model = GetBestStringValue(tags, "Model", "com.apple.quicktime.model");
-            var software = GetBestStringValue(tags, "Software", "com.apple.quicktime.software");
-
-            var creationTime = GetCreationTime(tags);
-            var location = GetLocation(tags);
+            var tags = new[] { GetTags(probeResultDocument, "packets_and_frames"), GetFormatTags(probeResultDocument), GetTags(probeResultDocument, "streams") }.SelectMany(x => x).ToArray();
 
             return new Entities.MediaInfo
             {
-                Duration = videoStreamInfo.Duration,
-                CreationTime = creationTime,
-                Size = videoStreamInfo.Size,
-                Orientation = orientation,
-                Flash = flash,
-                Saturation = saturation,
-                ExposureProgram = exposureProgram,
-                WhiteBalance = whiteBalance,
-                MeteringMode = meteringMode,
-                Contrast = contrast,
-                CameraMake = make,
-                CameraModel = model,
-                CameraSoftware = software,
-                Location = location,
-                LocationAltitude = gpsAltitude,
-                DigitalZoomRatio = digitalZoomRatio,
-                ExposureIndex = exposureIndex,
-                ShutterSpeedValue = shutterSpeedValue,
-                BrightnessValue = brightnessValue,
-                ApertureValue = apertureValue,
-                FocalLength = focalLength,
-                FocalLengthIn35mmFilm = focalLengthIn35mmFilm,
-                ExposureBias = exposureBias,
-                IsoSpeed = isoSpeed,
-                ExposureTime = exposureTime,
-                FStop = fstop
+                Duration = duration,
+                CreationTime = GetCreationTime(tags),
+                Size = size,
+                Orientation = GetEnumValue<MediaOrientation>(tags, "Orientation"),
+                Flash = GetEnumValue<MediaFlash>(tags, "Flash"),
+                Saturation = GetEnumValue<MediaSaturation>(tags, "Saturation"),
+                ExposureProgram = GetEnumValue<MediaExposureProgram>(tags, "ExposureProgram"),
+                WhiteBalance = GetEnumValue<MediaWhiteBalance>(tags, "WhiteBalance"),
+                MeteringMode = GetEnumValue<MediaMeteringMode>(tags, "MeteringMode"),
+                Contrast = GetEnumValue<MediaContrast>(tags, "Contrast"),
+                CameraMake = GetBestStringValue(tags, "Make", "com.apple.quicktime.make"),
+                CameraModel = GetBestStringValue(tags, "Model", "com.apple.quicktime.model"),
+                CameraSoftware = GetBestStringValue(tags, "Software", "com.apple.quicktime.software"),
+                Location = GetLocation(tags),
+                DigitalZoomRatio = GetFloatValue(tags, "DigitalZoomRatio"),
+                ExposureIndex = GetFloatValue(tags, "ExposureIndex"),
+                ShutterSpeedValue = GetFloatValue(tags, "ShutterSpeedValue"),
+                BrightnessValue = GetFloatValue(tags, "BrightnessValue"),
+                ApertureValue = GetFloatValue(tags, "ApertureValue"),
+                FocalLength = GetFloatValue(tags, "FocalLength"),
+                FocalLengthIn35mmFilm = (ushort?)GetIntegerValue(tags, "FocalLengthIn35mmFilm"),
+                ExposureBias = GetFloatValue(tags, "ExposureBiasValue"),
+                IsoSpeed = GetIntegerValue(tags, "ISOSpeedRatings"),
+                ExposureTime = GetFloatValue(tags, "ExposureTime"),
+                FStop = GetFloatValue(tags, "FNumber"),
+                SubjectDistanceRange = GetEnumValue<MediaSubjectDistanceRange>(tags, "SubjectDistanceRange"),
+                SceneCaptureType = GetEnumValue<MediaSceneCaptureType>(tags, "SceneCaptureType"),
+                SensingMethod = GetEnumValue<MediaSensingMethod>(tags, "SensingMethod"),
+                ImageUniqueId = GetBestStringValue(tags, "ImageUniqueID"),
             };
         }
     }

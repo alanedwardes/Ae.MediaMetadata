@@ -41,7 +41,7 @@ namespace Ae.MediaMetadata
 
             return new MediaInfo
             {
-                Size = (image.Width, image.Height),
+                Size = new(image.Width, image.Height),
                 CameraMake = GetValue<string?>(exif, ExifTag.Make)?.Trim(),
                 CameraModel = GetValue<string?>(exif, ExifTag.Model)?.Trim(),
                 CameraSoftware = GetValue<string?>(exif, ExifTag.Software)?.Trim(),
@@ -50,7 +50,6 @@ namespace Ae.MediaMetadata
                 DigitalZoomRatio = GetValue<Rational?>(exif, ExifTag.DigitalZoomRatio)?.ToDouble(),
                 ExposureBias = GetValue<SignedRational?>(exif, ExifTag.ExposureBiasValue)?.ToDouble(),
                 FocalLength = GetValue<Rational?>(exif, ExifTag.FocalLength)?.ToDouble(),
-                LocationAltitude = GetValue<Rational?>(exif, ExifTag.GPSAltitude)?.ToDouble(),
                 ExposureIndex = GetValue<Rational?>(exif, ExifTag.ExposureIndex)?.ToDouble(),
                 FStop = GetValue<Rational?>(exif, ExifTag.FNumber)?.ToDouble(),
                 IsoSpeed = GetValue<ushort[]>(exif, ExifTag.ISOSpeedRatings)?[0],
@@ -62,14 +61,18 @@ namespace Ae.MediaMetadata
                 Orientation = (MediaOrientation?)GetValue<ushort?>(exif, ExifTag.Orientation),
                 Saturation = (MediaSaturation?)GetValue<ushort?>(exif, ExifTag.Saturation),
                 WhiteBalance = (MediaWhiteBalance?)GetValue<ushort?>(exif, ExifTag.WhiteBalance),
-                ShutterSpeedValue = GetTimeSpan(exif, ExifTag.ShutterSpeedValue),
-                ExposureTime = GetTimeSpan(exif, ExifTag.ExposureTime),
+                SubjectDistanceRange = (MediaSubjectDistanceRange?)GetValue<ushort?>(exif, ExifTag.SubjectDistanceRange),
+                ShutterSpeedValue = GetValue<SignedRational?>(exif, ExifTag.ShutterSpeedValue)?.ToDouble(),
+                ExposureTime = GetValue<Rational?>(exif, ExifTag.ExposureTime)?.ToDouble(),
                 CreationTime = GetDateTime(exif),
-                Location = GetLocation(exif)
+                Location = GetLocation(exif),
+                SceneCaptureType = (MediaSceneCaptureType?)GetValue<ushort?>(exif, ExifTag.SceneCaptureType),
+                SensingMethod = (MediaSensingMethod?)GetValue<ushort?>(exif, ExifTag.SensingMethod),
+                ImageUniqueId = GetValue<string?>(exif, ExifTag.ImageUniqueID)?.Trim(),
             };
         }
 
-        private (double, double)? GetLocation(IEnumerable<IExifValue> exif)
+        private MediaLocation? GetLocation(IEnumerable<IExifValue> exif)
         {
             var coordinate = new Coordinate();
 
@@ -81,7 +84,10 @@ namespace Ae.MediaMetadata
             {
 
                 coordinate.SetDMS((float)latitude[0].ToDouble(), (float)latitude[1].ToDouble(), (float)latitude[2].ToDouble(), latitudeRef, (float)longitude[0].ToDouble(), (float)longitude[1].ToDouble(), (float)longitude[2].ToDouble(), longitudeRef);
-                return (coordinate.Latitude, coordinate.Longitude);
+                return new(coordinate.Latitude, coordinate.Longitude)
+                {
+                    Altitude = GetValue<Rational?>(exif, ExifTag.GPSAltitude)?.ToDouble()
+                };
             }
 
             return null;
@@ -107,12 +113,6 @@ namespace Ae.MediaMetadata
             }
 
             return null;
-        }
-
-        private TimeSpan? GetTimeSpan(IEnumerable<IExifValue> exif, ExifTag name)
-        {
-            var rational = GetValue<SignedRational?>(exif, name)?.ToDouble() ?? GetValue<Rational?>(exif, name)?.ToDouble();
-            return rational.HasValue ? TimeSpan.FromSeconds(rational.Value) : null;
         }
 
         private TValue? GetValue<TValue>(IEnumerable<IExifValue> exif, ExifTag name)

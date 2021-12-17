@@ -30,21 +30,24 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0f, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(20f), mediaInfo.ExposureTime);
+            Assert.Equal(0.02d, mediaInfo.ExposureTime);
             Assert.Equal(4.2d, mediaInfo.FocalLength);
             Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.6d, mediaInfo.FStop);
             Assert.Equal(125u, mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(5.6440726d), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(5.6440726115735345d, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.CompulsoryFlashMode | MediaFlash.AutoMode, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("11/11/2021 18:05:38 +00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -68,21 +71,24 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0f, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(5.91711d), mediaInfo.ExposureTime);
+            Assert.Equal(0.005917159763313609d, mediaInfo.ExposureTime);
             Assert.Equal(4.3d, mediaInfo.FocalLength);
             Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.5d, mediaInfo.FStop);
             Assert.Equal(50u, mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.CenterWeightedAverage, mediaInfo.MeteringMode);
             Assert.Equal(MediaSaturation.Normal, mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(7.4d), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(7.4d, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.RightTop, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.FlashFired, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("25/03/2021 17:38:08 +00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Equal("H12LLKF00SM", mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -106,21 +112,24 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0f, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(40d), mediaInfo.ExposureTime);
+            Assert.Equal(0.04d, mediaInfo.ExposureTime);
             Assert.Equal(4.2d, mediaInfo.FocalLength);
             Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.7d, mediaInfo.FStop);
             Assert.Equal(250u, mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.CenterWeightedAverage, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(4.64d), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(4.64d, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.RightTop, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.FlashDidNotFire, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("17/03/2018 12:49:35 +00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Equal("C12LLJB18SM C12LLKH01GM", mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -144,22 +153,26 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0f, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(33.333333d), mediaInfo.ExposureTime);
+            Assert.Equal(0.03333333333333333d, mediaInfo.ExposureTime);
             Assert.Equal(3.99d, mediaInfo.FocalLength);
             Assert.Equal((ushort)28, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.8d, mediaInfo.FStop);
             Assert.Equal(20u, mediaInfo.IsoSpeed);
-            Assert.Equal(12.02624703087886, mediaInfo.LocationAltitude);
+            Assert.Equal(12.02624703087886, mediaInfo.Location.Altitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(4.9076842d), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(4.907684296659972d, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
-            Assert.Equal(53.37292777803209, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(-0.9346972221798368, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(53.37292777803209, mediaInfo.Location.Latitude);
+            Assert.Equal(-0.9346972221798368, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("10/10/2021 11:26:45 +01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -183,22 +196,26 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0f, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(10d), mediaInfo.ExposureTime);
+            Assert.Equal(0.01d, mediaInfo.ExposureTime);
             Assert.Equal(6.6d, mediaInfo.FocalLength);
             Assert.Equal((ushort)57, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2.8d, mediaInfo.FStop);
             Assert.Equal(80u, mediaInfo.IsoSpeed);
-            Assert.Equal(20.366126205083262d, mediaInfo.LocationAltitude);
+            Assert.Equal(20.366126205083262d, mediaInfo.Location.Altitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(6.6458773d), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(6.645877378435518d, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.RightTop, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
-            Assert.Equal(53.30085277775923, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(0.1541388887829251, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(53.30085277775923, mediaInfo.Location.Latitude);
+            Assert.Equal(0.1541388887829251, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2021-10-23T18:10:50.0000000+01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -227,16 +244,19 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal((ushort)24, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.7d, mediaInfo.FStop);
             Assert.Equal(1000u, mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Unknown, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(5.643d), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(5.643d, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Null(mediaInfo.Orientation);
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("11/11/2021 18:28:49 +00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -260,22 +280,26 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Null(mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(0.6781), mediaInfo.ExposureTime);
+            Assert.Equal(0.000678166, mediaInfo.ExposureTime);
             Assert.Equal(3.82d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2d, mediaInfo.FStop);
             Assert.Equal(40u, mediaInfo.IsoSpeed);
-            Assert.Equal(1019, mediaInfo.LocationAltitude);
+            Assert.Equal(1019, mediaInfo.Location.Altitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(-10.5200000), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(-10.5200000, mediaInfo.ShutterSpeedValue);
             Assert.Null(mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.FlashDidNotFire, mediaInfo.Flash);
-            Assert.Equal(42.35649722205268, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(23.38378333333466, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(42.35649722205268, mediaInfo.Location.Latitude);
+            Assert.Equal(23.38378333333466, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2017-08-16T10:10:13.0000000+01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Equal(MediaSubjectDistanceRange.Distant, mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -299,22 +323,26 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Null(mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(8.3153), mediaInfo.ExposureTime);
+            Assert.Equal(0.008315366, mediaInfo.ExposureTime);
             Assert.Equal(3.82d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2d, mediaInfo.FStop);
             Assert.Equal(72u, mediaInfo.IsoSpeed);
-            Assert.Equal(17, mediaInfo.LocationAltitude);
+            Assert.Equal(17, mediaInfo.Location.Altitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(-6.91), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(-6.91, mediaInfo.ShutterSpeedValue);
             Assert.Null(mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Null(mediaInfo.Flash);
-            Assert.Equal(42.36251944435968, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(-71.0559500000212, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(42.36251944435968, mediaInfo.Location.Latitude);
+            Assert.Equal(-71.0559500000212, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2016-03-17T22:49:10.0000000+00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Equal("86831a0ac1a3f7a90000000000000000", mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -338,22 +366,26 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Null(mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(3.203), mediaInfo.ExposureTime);
+            Assert.Equal(0.003203033, mediaInfo.ExposureTime);
             Assert.Equal(3.82d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2d, mediaInfo.FStop);
             Assert.Equal(40u, mediaInfo.IsoSpeed);
-            Assert.Equal(32, mediaInfo.LocationAltitude);
+            Assert.Equal(32, mediaInfo.Location.Altitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(-8.28), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(-8.28, mediaInfo.ShutterSpeedValue);
             Assert.Null(mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Null(mediaInfo.Flash);
-            Assert.Equal(42.61323611153497, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(-70.63416388889154, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(42.61323611153497, mediaInfo.Location.Latitude);
+            Assert.Equal(-70.63416388889154, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2016-03-19T17:18:23.0000000+00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Equal("34050ed0f76953190000000000000000", mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -377,21 +409,24 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0, mediaInfo.ExposureBias);
             Assert.Equal(80, mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(6.077), mediaInfo.ExposureTime);
+            Assert.Equal(0.006077, mediaInfo.ExposureTime);
             Assert.Equal(13.5d, mediaInfo.FocalLength);
             Assert.Equal((ushort)82, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(4d, mediaInfo.FStop);
             Assert.Equal(80u, mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.CenterWeightedAverage, mediaInfo.MeteringMode);
             Assert.Equal(MediaSaturation.Normal, mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(7.36), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(7.36, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.CompulsoryFlashMode | MediaFlash.AutoMode, mediaInfo.Flash);
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("2005-03-26T23:00:19.0000000+00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Equal(MediaSubjectDistanceRange.Unknown, mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -420,7 +455,6 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Null(mediaInfo.FStop);
             Assert.Null(mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Null(mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
             Assert.Null(mediaInfo.ShutterSpeedValue);
@@ -430,6 +464,10 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Location);
             Assert.Null(mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -453,22 +491,26 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(1.0683), mediaInfo.ExposureTime);
+            Assert.Equal(0.0010683760683760685, mediaInfo.ExposureTime);
             Assert.Equal(4.25d, mediaInfo.FocalLength);
             Assert.Equal((ushort)26, mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(1.8d, mediaInfo.FStop);
             Assert.Equal(25u, mediaInfo.IsoSpeed);
-            Assert.Equal(20.345983787767132, mediaInfo.LocationAltitude);
+            Assert.Equal(20.345983787767132, mediaInfo.Location.Altitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Null(mediaInfo.Saturation);
-            Assert.Equal(TimeSpan.FromSeconds(9.8708726), mediaInfo.ShutterSpeedValue);
+            Assert.Equal(9.870872641509434, mediaInfo.ShutterSpeedValue);
             Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
             Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
             Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
-            Assert.Equal(53.30091944442855, mediaInfo.Location.Value.Latitude);
-            Assert.Equal(0.15401944451861913, mediaInfo.Location.Value.Longitude);
+            Assert.Equal(53.30091944442855, mediaInfo.Location.Latitude);
+            Assert.Equal(0.15401944451861913, mediaInfo.Location.Longitude);
             Assert.Equal(DateTimeOffset.Parse("2021-10-23T10:29:39.0000000+01:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
         }
 
         [Theory]
@@ -492,12 +534,11 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(0, mediaInfo.ExposureBias);
             Assert.Null(mediaInfo.ExposureIndex);
             Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
-            Assert.Equal(TimeSpan.FromMilliseconds(25), mediaInfo.ExposureTime);
+            Assert.Equal(0.025, mediaInfo.ExposureTime);
             Assert.Equal(7.6d, mediaInfo.FocalLength);
             Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
             Assert.Equal(2.8d, mediaInfo.FStop);
             Assert.Equal(200u, mediaInfo.IsoSpeed);
-            Assert.Null(mediaInfo.LocationAltitude);
             Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
             Assert.Equal(MediaSaturation.Normal, mediaInfo.Saturation);
             Assert.Null(mediaInfo.ShutterSpeedValue);
@@ -507,6 +548,53 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.Location);
             Assert.Equal(DateTimeOffset.Parse("2021-11-29T17:14:01.0000000+00:00"), mediaInfo.CreationTime);
             Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
+        }
+
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto14(Type exifReader)
+        {
+            var file = new FileInfo("Files/IMG_0455.JPG");
+
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Equal("Apple", mediaInfo.CameraMake);
+            Assert.Equal("iPhone 4S", mediaInfo.CameraModel);
+            Assert.Equal("5.1.1", mediaInfo.CameraSoftware);
+            Assert.Equal(3264, mediaInfo.Size.Width);
+            Assert.Equal(2448, mediaInfo.Size.Height);
+            Assert.Equal(2.5260688216892597, mediaInfo.ApertureValue);
+            Assert.Equal(8.205275229357799, mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
+            Assert.Equal(0.002320185614849188, mediaInfo.ExposureTime);
+            Assert.Equal(4.28d, mediaInfo.FocalLength);
+            Assert.Equal((ushort)35, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal(2.4d, mediaInfo.FStop);
+            Assert.Equal(64u, mediaInfo.IsoSpeed);
+            Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Equal(8.752281616688396, mediaInfo.ShutterSpeedValue);
+            Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Equal(MediaFlash.AutoMode, mediaInfo.Flash);
+            Assert.Equal(53.3789999961853, mediaInfo.Location.Latitude);
+            Assert.Equal(-1.4796666781107584, mediaInfo.Location.Longitude);
+            Assert.Equal(90, mediaInfo.Location.Altitude);
+            Assert.Equal(DateTimeOffset.Parse("2012-06-28T14:19:02.0000000+01:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Equal("be7cd6bb6f60371b0000000000000000", mediaInfo.ImageUniqueId);
         }
     }
 }
