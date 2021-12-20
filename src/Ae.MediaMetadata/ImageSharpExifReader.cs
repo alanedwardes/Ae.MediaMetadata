@@ -1,4 +1,5 @@
 ﻿using Ae.MediaMetadata.Entities;
+using Ae.MediaMetadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using SixLabors.ImageSharp;
@@ -95,20 +96,20 @@ namespace Ae.MediaMetadata
 
         private DateTimeOffset? GetDateTime(IEnumerable<IExifValue> exif)
         {
-            var tag = exif.FirstOrDefault(x => x.Tag == ExifTag.DateTime || x.Tag == ExifTag.DateTimeOriginal);
-            if (tag != null && DateTimeOffset.TryParseExact(tag.ToString(), "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out var result))
+            var result = exif.FirstOrDefault(x => x.Tag == ExifTag.DateTime || x.Tag == ExifTag.DateTimeOriginal)?.ToString().ParseDateTimeString();
+            if (result.HasValue)
             {
-                return result;
+                return result.Value;
             }
 
             var tag1 = GetValue<string?>(exif, ExifTag.GPSDateStamp);
             var tag2 = GetValue<Rational[]?>(exif, ExifTag.GPSTimestamp);
             if (tag1 != null && tag2 != null)
             {
-                var timestampParts = tag1 + ' ' + string.Join(":", tag2.Select(x => x.ToDouble()));
-                if (DateTimeOffset.TryParseExact(timestampParts, "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out var result1))
+                result = MetadataStringExtensions.ParseGpsTime(tag1, string.Join(":", tag2.Select(x => x.ToDouble())));
+                if (result.HasValue)
                 {
-                    return result1;
+                    return result.Value;
                 }
             }
 

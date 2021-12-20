@@ -1,4 +1,5 @@
 ﻿using Ae.MediaMetadata.Entities;
+using Ae.MediaMetadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
@@ -173,12 +174,8 @@ namespace Ae.MediaMetadata
             var creationTime = GetBestStringValue(tags, "creation_time", "DateTime", "DateTimeOriginal", "DateTimeDigitized");
             if (creationTime != null)
             {
-                if (DateTimeOffset.TryParse(creationTime, null, DateTimeStyles.RoundtripKind, out var result))
-                {
-                    return result;
-                }
-
-                if (DateTimeOffset.TryParseExact(creationTime, "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out result))
+                var result = creationTime.ParseDateTimeString();
+                if (result.HasValue)
                 {
                     return result;
                 }
@@ -188,10 +185,10 @@ namespace Ae.MediaMetadata
             var gpsDatestamp = GetBestStringValue(tags, "GPSDateStamp");
             if (gpsTimestamp != null && gpsDatestamp != null)
             {
-                var timestampParts = gpsDatestamp + ' ' + string.Join(":", ParseLatLongValue(gpsTimestamp));
-                if (DateTimeOffset.TryParseExact(timestampParts, "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out var result))
+                var result1 = MetadataStringExtensions.ParseGpsTime(gpsDatestamp, string.Join(":", ParseLatLongValue(gpsTimestamp)));
+                if (result1.HasValue)
                 {
-                    return result;
+                    return result1.Value;
                 }
             }
 

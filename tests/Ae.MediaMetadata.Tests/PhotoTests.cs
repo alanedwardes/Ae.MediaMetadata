@@ -596,5 +596,48 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
             Assert.Equal("be7cd6bb6f60371b0000000000000000", mediaInfo.ImageUniqueId);
         }
+
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto15(Type exifReader)
+        {
+            var file = new FileInfo("Files/IMG_0922.JPG");
+
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Null(mediaInfo.CameraMake);
+            Assert.Null(mediaInfo.CameraModel);
+            Assert.Equal("Facebook for iPhone/iPad", mediaInfo.CameraSoftware);
+            Assert.Equal(3264, mediaInfo.Size.Width);
+            Assert.Equal(2448, mediaInfo.Size.Height);
+            Assert.Equal(2.5260688216892597, mediaInfo.ApertureValue);
+            Assert.Equal(0.4564386702330913, mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Equal(MediaExposureProgram.NormalProgram, mediaInfo.ExposureProgram);
+            Assert.Equal(0.058823529411764705, mediaInfo.ExposureTime);
+            Assert.Equal(4.28d, mediaInfo.FocalLength);
+            Assert.Equal((ushort)35, mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal(2.4d, mediaInfo.FStop);
+            Assert.Equal(400u, mediaInfo.IsoSpeed);
+            Assert.Equal(MediaMeteringMode.Pattern, mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Equal(4.099544072948328, mediaInfo.ShutterSpeedValue);
+            Assert.Equal(MediaWhiteBalance.Auto, mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Equal(MediaFlash.CompulsoryFlashMode | MediaFlash.AutoMode, mediaInfo.Flash);
+            Assert.Equal(53, mediaInfo.Location.Latitude);
+            Assert.Equal(-1.4692444443702697, mediaInfo.Location.Longitude);
+            Assert.Equal(77, mediaInfo.Location.Altitude);
+            Assert.Equal(DateTimeOffset.Parse("2013-10-09T23:54:04.0000000+01:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
+            Assert.Equal("542458f4ea0783650000000000000000", mediaInfo.ImageUniqueId);
+        }
     }
 }

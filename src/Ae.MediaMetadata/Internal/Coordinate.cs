@@ -5,7 +5,7 @@
 using System;
 using System.Globalization;
 
-namespace Ae.MediaMetadata.Entities
+namespace Ae.MediaMetadata.Internal
 {
     internal sealed class Coordinate
     {
