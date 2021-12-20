@@ -639,5 +639,48 @@ namespace Ae.MediaMetadata.Tests
             Assert.Equal(MediaSensingMethod.OneChipColorAreaSensor, mediaInfo.SensingMethod);
             Assert.Equal("542458f4ea0783650000000000000000", mediaInfo.ImageUniqueId);
         }
+
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto16(Type exifReader)
+        {
+            var file = new FileInfo("Files/IMG_20151231_123507.jpg");
+
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Equal("motorola", mediaInfo.CameraMake);
+            Assert.Equal("Nexus 6", mediaInfo.CameraModel);
+            Assert.Equal("Picasa", mediaInfo.CameraSoftware);
+            Assert.Equal(4160, mediaInfo.Size.Width);
+            Assert.Equal(2340, mediaInfo.Size.Height);
+            Assert.Equal(2, mediaInfo.ApertureValue);
+            Assert.Null(mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Null(mediaInfo.ExposureProgram);
+            Assert.Equal(0.001387633, mediaInfo.ExposureTime);
+            Assert.Equal(3.82d, mediaInfo.FocalLength);
+            Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal(2, mediaInfo.FStop);
+            Assert.Equal(40u, mediaInfo.IsoSpeed);
+            Assert.Null(mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Equal(-9.49, mediaInfo.ShutterSpeedValue);
+            Assert.Null(mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Flash);
+            Assert.Equal(53.381044443978205, mediaInfo.Location.Latitude);
+            Assert.Equal(-1.4699027776718139, mediaInfo.Location.Longitude);
+            Assert.Null(mediaInfo.Location.Altitude);
+            Assert.Equal(DateTimeOffset.Parse("2015-12-31T12:35:00.0000000+00:00"), mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Equal("e2d8f42014aa6d450000000000000000", mediaInfo.ImageUniqueId);
+        }
     }
 }

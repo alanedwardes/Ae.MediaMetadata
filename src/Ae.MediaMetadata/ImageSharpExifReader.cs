@@ -106,7 +106,7 @@ namespace Ae.MediaMetadata
             var tag2 = GetValue<Rational[]?>(exif, ExifTag.GPSTimestamp);
             if (tag1 != null && tag2 != null)
             {
-                result = MetadataStringExtensions.ParseGpsTime(tag1, string.Join(":", tag2.Select(x => x.ToDouble())));
+                result = MetadataStringExtensions.ParseGpsTime(tag1, tag2.Select(x => x.ToDouble()));
                 if (result.HasValue)
                 {
                     return result.Value;

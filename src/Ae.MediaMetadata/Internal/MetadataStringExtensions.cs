@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Ae.MediaMetadata.Internal
 {
@@ -25,9 +27,11 @@ namespace Ae.MediaMetadata.Internal
             return null;
         }
 
-        public static DateTimeOffset? ParseGpsTime(string? date, string? time)
+        public static DateTimeOffset? ParseGpsTime(string? date, IEnumerable<double> time)
         {
-            if (DateTimeOffset.TryParseExact(date + ' ' + time, "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out var result))
+            var timeString = string.Join(':', time.Select(x => x.ToString().PadLeft(2, '0')));
+
+            if (DateTimeOffset.TryParseExact(date + ' ' + timeString, "yyyy:MM:dd HH:mm:ss", null, DateTimeStyles.None, out var result))
             {
                 return result;
             }

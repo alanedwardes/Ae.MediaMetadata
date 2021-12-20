@@ -185,7 +185,7 @@ namespace Ae.MediaMetadata
             var gpsDatestamp = GetBestStringValue(tags, "GPSDateStamp");
             if (gpsTimestamp != null && gpsDatestamp != null)
             {
-                var result1 = MetadataStringExtensions.ParseGpsTime(gpsDatestamp, string.Join(":", ParseLatLongValue(gpsTimestamp)));
+                var result1 = MetadataStringExtensions.ParseGpsTime(gpsDatestamp, ParseLatLongValue(gpsTimestamp).Select(x => (double)x));
                 if (result1.HasValue)
                 {
                     return result1.Value;
