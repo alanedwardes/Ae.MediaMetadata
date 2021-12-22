@@ -682,5 +682,46 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.SensingMethod);
             Assert.Equal("e2d8f42014aa6d450000000000000000", mediaInfo.ImageUniqueId);
         }
+
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto17(Type exifReader)
+        {
+            var file = new FileInfo("Files/IMG_3263.JPG");
+
+            var mediaInfo = await ((IExifReader)Activator.CreateInstance(exifReader)).ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Null(mediaInfo.CameraMake);
+            Assert.Null(mediaInfo.CameraModel);
+            Assert.Null(mediaInfo.CameraSoftware);
+            Assert.Equal(4000, mediaInfo.Size.Width);
+            Assert.Equal(3000, mediaInfo.Size.Height);
+            Assert.Null(mediaInfo.ApertureValue);
+            Assert.Null(mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Null(mediaInfo.ExposureProgram);
+            Assert.Null(mediaInfo.ExposureTime);
+            Assert.Null(mediaInfo.FocalLength);
+            Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Null(mediaInfo.FStop);
+            Assert.Null(mediaInfo.IsoSpeed);
+            Assert.Null(mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Null(mediaInfo.ShutterSpeedValue);
+            Assert.Null(mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Flash);
+            Assert.Null(mediaInfo.Location);
+            Assert.Null(mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Equal(MediaSceneCaptureType.Standard, mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
+        }
     }
 }
