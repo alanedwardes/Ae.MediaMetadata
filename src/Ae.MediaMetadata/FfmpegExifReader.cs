@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -118,19 +117,6 @@ namespace Ae.MediaMetadata
             return tags;
         }
 
-        private static float[] ParseLatLongValue(string value)
-        {
-            return value.Split(',').Select(x => x.Trim()).Select(x =>
-            {
-                var parts = x.Split(':').Select(float.Parse).ToArray();
-                if (parts.Length != 2)
-                {
-                    return 0;
-                }
-                return parts[0] / parts[1];
-            }).ToArray();
-        }
-
         private MediaLocation? GetLocation(IEnumerable<KeyValuePair<string, string>> tags)
         {
             var altitude = GetFloatValue(tags, "GPSAltitude");
@@ -204,20 +190,21 @@ namespace Ae.MediaMetadata
             return commonmatchingTags.Select(x => x.Key).FirstOrDefault();
         }
 
+        private static double GetFloatValue(string value)
+        {
+            var parts = value.Split(':').Select(double.Parse).ToArray();
+            return parts[0] / parts[1];
+        }
+
         private static double? GetFloatValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
         {
             var bestValue = GetBestStringValue(tags, names);
-            if (bestValue == null)
-            {
-                return null;
-            }
+            return bestValue == null ? null : GetFloatValue(bestValue);
+        }
 
-            var parts = bestValue
-                .Split(':')
-                .Select(double.Parse)
-                .ToArray();
-
-            return parts[0] / parts[1];
+        private static double[] ParseLatLongValue(string value)
+        {
+            return value.Split(',').Select(x => x.Trim()).Select(GetFloatValue).ToArray();
         }
 
         private static uint? GetIntegerValue(IEnumerable<KeyValuePair<string, string>> tags, params string[] names)
@@ -256,6 +243,11 @@ namespace Ae.MediaMetadata
             _logger.LogInformation("Finished probing information for {File} in {TimeSeconds}s", fileInfo, sw.Elapsed.TotalSeconds);
 
             var probeResultDocument = JsonDocument.Parse(probeResult);
+
+            if (!new HashSet<string> { "packets_and_frames", "streams", "format" }.SetEquals(probeResultDocument.RootElement.EnumerateObject().Select(x => x.Name)))
+            {
+                throw new InvalidOperationException("ffprobe did not return the required JSON keys, it appears to have not been able to load the file");
+            }
 
             var (size, duration) = GetVideoStreamInfo(probeResultDocument);
 

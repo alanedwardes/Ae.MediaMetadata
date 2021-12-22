@@ -84,7 +84,7 @@ namespace Ae.MediaMetadata
             if (latitude != null && longitude != null)
             {
 
-                coordinate.SetDMS((float)latitude[0].ToDouble(), (float)latitude[1].ToDouble(), (float)latitude[2].ToDouble(), latitudeRef, (float)longitude[0].ToDouble(), (float)longitude[1].ToDouble(), (float)longitude[2].ToDouble(), longitudeRef);
+                coordinate.SetDMS(latitude[0].ToDouble(), latitude[1].ToDouble(), latitude[2].ToDouble(), latitudeRef, longitude[0].ToDouble(), longitude[1].ToDouble(), longitude[2].ToDouble(), longitudeRef);
                 return new(coordinate.Latitude, coordinate.Longitude)
                 {
                     Altitude = GetValue<Rational?>(exif, ExifTag.GPSAltitude)?.ToDouble()

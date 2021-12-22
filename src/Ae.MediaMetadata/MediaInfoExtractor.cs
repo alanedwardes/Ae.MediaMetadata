@@ -47,7 +47,7 @@ namespace Ae.MediaMetadata
                 }
             }
 
-            throw new NotImplementedException();
+            throw new NotImplementedException($"Information for {fileInfo} could not be generated");
         }
     }
 }
