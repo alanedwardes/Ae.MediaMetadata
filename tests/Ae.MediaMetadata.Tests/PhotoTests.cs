@@ -774,5 +774,157 @@ namespace Ae.MediaMetadata.Tests
             Assert.Null(mediaInfo.SensingMethod);
             Assert.Equal("9e41bb0cbcf0fe620000000000000000", mediaInfo.ImageUniqueId);
         }
+
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto19(Type exifReader)
+        {
+            var reader = (IExifReader)Activator.CreateInstance(exifReader);
+
+            var file = new FileInfo("Files/IMG_20160405_104503.jpg");
+            var mediaInfo = await reader.ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Equal("motorola", mediaInfo.CameraMake);
+            Assert.Equal("Nexus 6", mediaInfo.CameraModel);
+            Assert.Null(mediaInfo.CameraSoftware);
+            Assert.Equal(4160, mediaInfo.Size.Width);
+            Assert.Equal(2340, mediaInfo.Size.Height);
+            Assert.Equal(2, mediaInfo.ApertureValue);
+            Assert.Null(mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Null(mediaInfo.ExposureProgram);
+            Assert.Equal(0.000114766, mediaInfo.ExposureTime);
+            Assert.Equal(3.82, mediaInfo.FocalLength);
+            Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal(2, mediaInfo.FStop);
+            Assert.Equal(40u, mediaInfo.IsoSpeed);
+            Assert.Null(mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Equal(-13.08, mediaInfo.ShutterSpeedValue);
+            Assert.Null(mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Flash);
+            Assert.Null(mediaInfo.Location);
+            Assert.Null(mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
+
+            file = new FileInfo("Files/IMG_20160405_104503_dupe.jpg");
+            mediaInfo = await reader.ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Equal("motorola", mediaInfo.CameraMake);
+            Assert.Equal("Nexus 6", mediaInfo.CameraModel);
+            Assert.Equal("Picasa", mediaInfo.CameraSoftware);
+            Assert.Equal(4160, mediaInfo.Size.Width);
+            Assert.Equal(2340, mediaInfo.Size.Height);
+            Assert.Equal(2, mediaInfo.ApertureValue);
+            Assert.Null(mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Null(mediaInfo.ExposureProgram);
+            Assert.Equal(0.000114766, mediaInfo.ExposureTime);
+            Assert.Equal(3.82, mediaInfo.FocalLength);
+            Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal(2, mediaInfo.FStop);
+            Assert.Equal(40u, mediaInfo.IsoSpeed);
+            Assert.Null(mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Equal(-13.08, mediaInfo.ShutterSpeedValue);
+            Assert.Null(mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Flash);
+            Assert.Null(mediaInfo.Location);
+            Assert.Null(mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Equal("8972cdbe89c3420e0000000000000000", mediaInfo.ImageUniqueId);
+        }
+
+        [Theory]
+        [InlineData(typeof(ImageSharpExifReader))]
+        [InlineData(typeof(FfmpegExifReader))]
+        public async Task TestPhoto20(Type exifReader)
+        {
+            var reader = (IExifReader)Activator.CreateInstance(exifReader);
+
+            var file = new FileInfo("Files/IMG_20160327_175150.jpg");
+            var mediaInfo = await reader.ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Equal("motorola", mediaInfo.CameraMake);
+            Assert.Equal("Nexus 6", mediaInfo.CameraModel);
+            Assert.Null(mediaInfo.CameraSoftware);
+            Assert.Equal(2340, mediaInfo.Size.Width);
+            Assert.Equal(4160, mediaInfo.Size.Height);
+            Assert.Equal(2, mediaInfo.ApertureValue);
+            Assert.Null(mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Null(mediaInfo.ExposureProgram);
+            Assert.Equal(0.005404467, mediaInfo.ExposureTime);
+            Assert.Equal(3.82, mediaInfo.FocalLength);
+            Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal(2, mediaInfo.FStop);
+            Assert.Equal(40u, mediaInfo.IsoSpeed);
+            Assert.Null(mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Equal(-7.53, mediaInfo.ShutterSpeedValue);
+            Assert.Null(mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Flash);
+            Assert.Null(mediaInfo.Location);
+            Assert.Null(mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Null(mediaInfo.ImageUniqueId);
+
+            file = new FileInfo("Files/IMG_20160327_175150_dupe.jpg");
+            mediaInfo = await reader.ReadMediaInfo(file, CancellationToken.None);
+
+            Assert.Equal("motorola", mediaInfo.CameraMake);
+            Assert.Equal("Nexus 6", mediaInfo.CameraModel);
+            Assert.Equal("Picasa", mediaInfo.CameraSoftware);
+            Assert.Equal(2340, mediaInfo.Size.Width);
+            Assert.Equal(4160, mediaInfo.Size.Height);
+            Assert.Equal(2, mediaInfo.ApertureValue);
+            Assert.Null(mediaInfo.BrightnessValue);
+            Assert.Null(mediaInfo.Contrast);
+            Assert.Null(mediaInfo.DigitalZoomRatio);
+            Assert.Null(mediaInfo.ExposureBias);
+            Assert.Null(mediaInfo.ExposureIndex);
+            Assert.Null(mediaInfo.ExposureProgram);
+            Assert.Equal(0.005404467, mediaInfo.ExposureTime);
+            Assert.Equal(3.82, mediaInfo.FocalLength);
+            Assert.Null(mediaInfo.FocalLengthIn35mmFilm);
+            Assert.Equal(2, mediaInfo.FStop);
+            Assert.Equal(40u, mediaInfo.IsoSpeed);
+            Assert.Null(mediaInfo.MeteringMode);
+            Assert.Null(mediaInfo.Saturation);
+            Assert.Equal(-7.53, mediaInfo.ShutterSpeedValue);
+            Assert.Null(mediaInfo.WhiteBalance);
+            Assert.Equal(MediaOrientation.TopLeft, mediaInfo.Orientation);
+            Assert.Null(mediaInfo.Flash);
+            Assert.Null(mediaInfo.Location);
+            Assert.Null(mediaInfo.CreationTime);
+            Assert.Null(mediaInfo.Duration);
+            Assert.Null(mediaInfo.SubjectDistanceRange);
+            Assert.Null(mediaInfo.SceneCaptureType);
+            Assert.Null(mediaInfo.SensingMethod);
+            Assert.Equal("931ec4893ed09e2d0000000000000000", mediaInfo.ImageUniqueId);
+        }
     }
 }
