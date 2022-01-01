@@ -54,16 +54,13 @@ namespace Ae.MediaMetadata
             return tags;
         }
 
-        private (MediaSize Size, float? Duration) GetVideoStreamInfo(JsonDocument probeResultDocument)
+        private (MediaSize Size, float? Duration, IReadOnlyList<IReadOnlyList<KeyValuePair<string, JsonElement>>> sideDataList) GetVideoStreamInfo(JsonDocument probeResultDocument)
         {
-            if (!probeResultDocument.RootElement.TryGetProperty("streams", out JsonElement streamsElement))
-            {
-                return (new MediaSize(), null);
-            }
+            var sideDataList = new List<List<KeyValuePair<string, JsonElement>>>();
 
             MediaSize? size = null;
             float? duration = null;
-            foreach (var stream in streamsElement.EnumerateArray())
+            foreach (var stream in probeResultDocument.RootElement.GetProperty("streams").EnumerateArray())
             {
                 var codecType = stream.GetProperty("codec_type").GetString();
                 if (codecType == "video")
@@ -85,6 +82,16 @@ namespace Ae.MediaMetadata
                         }
                     }
                 }
+
+                if (stream.TryGetProperty("side_data_list", out var sideDataListJson))
+                {
+                    foreach (var sideData in sideDataListJson.EnumerateArray())
+                    {
+                        sideDataList.Add(sideData.EnumerateObject()
+                            .Select(x => KeyValuePair.Create(x.Name, x.Value))
+                            .ToList());
+                    }
+                }
             }
 
             if (size == null)
@@ -92,7 +99,7 @@ namespace Ae.MediaMetadata
                 throw new InvalidOperationException("No media with or height found");
             }
 
-            return (size, duration);
+            return (size, duration, sideDataList);
         }
 
         private IReadOnlyList<KeyValuePair<string, string>> GetFormatTags(JsonDocument probeResultDocument)
@@ -153,6 +160,42 @@ namespace Ae.MediaMetadata
             {
                 Altitude = altitude
             };
+        }
+
+        private MediaOrientation? GetMediaOrientation(IEnumerable<KeyValuePair<string, string>> tags, IReadOnlyList<IReadOnlyList<KeyValuePair<string, JsonElement>>> sideDataList)
+        {
+            var mediaOrientation = GetEnumValue<MediaOrientation>(tags, "Orientation");
+            if (mediaOrientation.HasValue)
+            {
+                return mediaOrientation.Value;
+            }
+
+            var displayMatrixData = sideDataList.FirstOrDefault(x => x.Any(y => y.Key == "side_data_type" && y.Value.GetString() == "Display Matrix"));
+            if (displayMatrixData == null)
+            {
+                return null;
+            }
+
+            var rotationRaw = displayMatrixData.FirstOrDefault(x => x.Key == "rotation");
+            if (rotationRaw.Equals(default(KeyValuePair<string, JsonElement>)))
+            {
+                return null;
+            }
+
+            if (rotationRaw.Value.TryGetInt32(out int rotation))
+            {
+                switch (rotation)
+                {
+                    case -90:
+                        return MediaOrientation.LeftBottom;
+                    case 90:
+                        return MediaOrientation.RightTop;
+                    case 180:
+                        return MediaOrientation.BottomRight;
+                }
+            }
+
+            return null;
         }
 
         private static DateTimeOffset? GetCreationTime(IEnumerable<KeyValuePair<string, string>> tags)
@@ -249,7 +292,7 @@ namespace Ae.MediaMetadata
                 throw new InvalidOperationException("ffprobe did not return the required JSON keys, it appears to have not been able to load the file");
             }
 
-            var (size, duration) = GetVideoStreamInfo(probeResultDocument);
+            var (size, duration, sideDataList) = GetVideoStreamInfo(probeResultDocument);
 
             var tags = new[] { GetTags(probeResultDocument, "packets_and_frames"), GetFormatTags(probeResultDocument), GetTags(probeResultDocument, "streams") }.SelectMany(x => x).ToArray();
 
@@ -258,7 +301,7 @@ namespace Ae.MediaMetadata
                 Duration = duration,
                 CreationTime = GetCreationTime(tags),
                 Size = size,
-                Orientation = GetEnumValue<MediaOrientation>(tags, "Orientation"),
+                Orientation = GetMediaOrientation(tags, sideDataList),
                 Flash = GetEnumValue<MediaFlash>(tags, "Flash"),
                 Saturation = GetEnumValue<MediaSaturation>(tags, "Saturation"),
                 ExposureProgram = GetEnumValue<MediaExposureProgram>(tags, "ExposureProgram"),
@@ -283,7 +326,7 @@ namespace Ae.MediaMetadata
                 SubjectDistanceRange = GetEnumValue<MediaSubjectDistanceRange>(tags, "SubjectDistanceRange"),
                 SceneCaptureType = GetEnumValue<MediaSceneCaptureType>(tags, "SceneCaptureType"),
                 SensingMethod = GetEnumValue<MediaSensingMethod>(tags, "SensingMethod"),
-                ImageUniqueId = GetBestStringValue(tags, "ImageUniqueID"),
+                ImageUniqueId = GetBestStringValue(tags, "ImageUniqueID", "com.apple.quicktime.content.identifier"),
             };
         }
     }
