@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.IO;
 using System.Threading;
@@ -48,6 +51,12 @@ namespace Ae.MediaMetadata
             }
 
             throw new NotImplementedException($"Information for {fileInfo} could not be generated");
+        }
+
+        public TPixel ExtractColor<TPixel>(Image<TPixel> image) where TPixel : unmanaged, IPixel<TPixel>
+        {
+            using var clone = image.Clone(x => x.Resize(1, 1));
+            return clone[0, 0];
         }
     }
 }
