@@ -4,6 +4,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,13 +33,23 @@ namespace Ae.MediaMetadata
 
         public async Task<Entities.MediaInfo> ExtractInformation(FileInfo fileInfo, CancellationToken token)
         {
-            var exifReaders = new IExifReader[]
+            IExifReader imageSharpReader = new ImageSharpExifReader(_logger);
+            IExifReader ffmpegReader = new FfmpegExifReader(_logger);
+
+            // Don't bother trying both when we know which reader should be used
+            var extensionReaderMap = new Dictionary<string, IExifReader>
             {
-                new ImageSharpExifReader(_logger),
-                new FfmpegExifReader(_logger)
+                { ".mp4", ffmpegReader },
+                { ".mov", ffmpegReader }
             };
 
-            foreach (var exifReader in exifReaders)
+            var readers = new[] { imageSharpReader, ffmpegReader };
+            if (extensionReaderMap.TryGetValue(fileInfo.Extension.ToLowerInvariant(), out var knownReader))
+            {
+                readers = new[] { knownReader };
+            }
+
+            foreach (var exifReader in readers)
             {
                 try
                 {
