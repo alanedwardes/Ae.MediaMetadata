@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Ae.MediaMetadata.Internal;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -6,6 +7,7 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
@@ -36,32 +38,29 @@ namespace Ae.MediaMetadata
             IExifReader imageSharpReader = new ImageSharpExifReader(_logger);
             IExifReader ffmpegReader = new FfmpegExifReader(_logger);
 
-            // Don't bother trying both when we know which reader should be used
-            var extensionReaderMap = new Dictionary<string, IExifReader>
-            {
-                { ".mp4", ffmpegReader },
-                { ".mov", ffmpegReader }
-            };
+            IExifReader[] exifReaders = new[] { imageSharpReader, ffmpegReader };
 
-            var readers = new[] { imageSharpReader, ffmpegReader };
-            if (extensionReaderMap.TryGetValue(fileInfo.Extension.ToLowerInvariant(), out var knownReader))
+            // If it looks like a video, use ffmpeg
+            if (FileExtensions.Videos.Contains(fileInfo.Extension, StringComparer.InvariantCultureIgnoreCase))
             {
-                readers = new[] { knownReader };
+                exifReaders = new[] { ffmpegReader };
             }
 
-            foreach (var exifReader in readers)
+            var exceptions = new List<Exception>();
+
+            foreach (var exifReader in exifReaders)
             {
                 try
                 {
                     return await exifReader.ReadMediaInfo(fileInfo, token);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    // Continue
+                    exceptions.Add(e);
                 }
             }
 
-            throw new NotImplementedException($"Information for {fileInfo} could not be generated");
+            throw new AggregateException($"Information for {fileInfo} could not be generated", exceptions);
         }
 
         public TPixel ExtractColor<TPixel>(Image<TPixel> image) where TPixel : unmanaged, IPixel<TPixel>

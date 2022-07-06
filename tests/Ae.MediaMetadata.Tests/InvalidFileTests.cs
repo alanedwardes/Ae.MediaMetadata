@@ -1,5 +1,4 @@
-﻿using Ae.MediaMetadata;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace Ae.MediaMetadata.Tests
         {
             var file = new FileInfo("Files/IMG_1812.HEIC");
 
-            await Assert.ThrowsAsync<NotImplementedException>(() => _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None));
+            await Assert.ThrowsAsync<AggregateException>(() => _mediaInfoExtractor.ExtractInformation(file, CancellationToken.None));
         }
     }
 }

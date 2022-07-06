@@ -281,13 +281,23 @@ namespace Ae.MediaMetadata
         public async Task<Entities.MediaInfo> ReadMediaInfo(FileInfo fileInfo, CancellationToken token)
         {
             var sw = Stopwatch.StartNew();
-            string probeResult = await Probe.New().Start($"-print_format json -show_frames -show_streams -show_format -show_packets \"{fileInfo}\"", token);
+
+            var parameters = "-show_streams -show_format";
+            var requiredSections = new [] { "streams", "format" };
+
+            if (FileExtensions.Images.Contains(fileInfo.Extension, StringComparer.InvariantCultureIgnoreCase))
+            {
+                parameters = "-show_frames -show_streams -show_packets";
+                requiredSections = new[] { "packets_and_frames", "streams" };
+            }
+
+            string probeResult = await Probe.New().Start($"-print_format json {parameters} \"{fileInfo}\"", token);
 
             _logger.LogInformation("Finished probing information for {File} in {TimeSeconds}s", fileInfo, sw.Elapsed.TotalSeconds);
 
             var probeResultDocument = JsonDocument.Parse(probeResult);
 
-            if (!new HashSet<string> { "packets_and_frames", "streams", "format" }.SetEquals(probeResultDocument.RootElement.EnumerateObject().Select(x => x.Name)))
+            if (!requiredSections.ToHashSet().SetEquals(probeResultDocument.RootElement.EnumerateObject().Select(x => x.Name)))
             {
                 throw new InvalidOperationException("ffprobe did not return the required JSON keys, it appears to have not been able to load the file");
             }
